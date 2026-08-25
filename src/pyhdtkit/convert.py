@@ -1,16 +1,16 @@
 """Public conversion API for pyhdtkit.
 
-These functions are the stable Python-facing surface. They currently raise
-``NotImplementedError`` — this is just the base scaffold. The pure-Python HDT
-read/write and Turtle parse/serialize logic lands in a follow-up phase.
+These functions are the stable Python-facing surface, backed by a from-scratch
+pure-Python HDT binary reader/writer (``pyhdtkit.hdt``) and ``rdflib`` for the
+Turtle side (``pyhdtkit.ttl``). ``hdtcat`` is still a stub.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from pyhdtkit.hdt.reader import read_hdt
-from pyhdtkit.ttl import serialize_ttl
+from pyhdtkit.hdt.reader import read_hdt, write_hdt
+from pyhdtkit.ttl import parse_ttl, serialize_ttl
 
 
 def ttl2hdt(
@@ -30,7 +30,8 @@ def ttl2hdt(
         ValueError: The ``.ttl`` file could not be parsed or the ``.hdt`` file could
             not be written (e.g. malformed Turtle, or an unwritable output path).
     """
-    raise NotImplementedError("ttl2hdt is not implemented yet")
+    triples = parse_ttl(input_path, base_uri=base_uri)
+    write_hdt(triples, output_path)
 
 
 def hdt2ttl(

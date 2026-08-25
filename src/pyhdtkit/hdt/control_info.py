@@ -64,3 +64,11 @@ def parse_control_info(data: bytes, pos: int) -> tuple[ControlInfo, int]:
         raise ValueError(f"control info CRC16 mismatch at offset {start}")
 
     return ControlInfo(control_type, fmt, _parse_properties(props_text)), pos
+
+
+def build_control_info(control_type: int, fmt: str, properties: str = "") -> bytes:
+    """Inverse of ``parse_control_info``. ``properties`` is the raw
+    ``"key=value;..."`` string (already including any trailing ``;``).
+    """
+    body = COOKIE + bytes([control_type]) + fmt.encode("utf-8") + b"\x00" + properties.encode("utf-8") + b"\x00"
+    return body + crc16(body).to_bytes(2, "little")

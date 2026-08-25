@@ -166,3 +166,27 @@ def pack_lsb_bitfields(values: list[int], numbits: int) -> bytes:
         total |= v << (i * numbits)
     nbytes = (numbits * len(values) + 7) // 8
     return total.to_bytes(nbytes, "little")
+
+
+def bits_needed(max_value: int) -> int:
+    """Minimum bit width to represent ``max_value`` (at least 1, so a
+    single-entry array of value 0 still has a defined width).
+    """
+    return max(1, max_value.bit_length())
+
+
+def encode_log_array(values: list[int]) -> bytes:
+    """Inverse of ``decode_log_array``."""
+    numbits = bits_needed(max(values, default=0))
+    header = bytes([1, numbits]) + vbyte_encode(len(values))
+    header = header + bytes([crc8(header)])
+    packed = pack_lsb_bitfields(values, numbits)
+    return header + packed + crc32c(packed).to_bytes(4, "little")
+
+
+def encode_bitmap(bits: list[int]) -> bytes:
+    """Inverse of ``decode_bitmap``."""
+    header = bytes([1]) + vbyte_encode(len(bits))
+    header = header + bytes([crc8(header)])
+    packed = pack_lsb_bitfields(bits, 1)
+    return header + packed + crc32c(packed).to_bytes(4, "little")
