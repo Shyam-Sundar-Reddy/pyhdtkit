@@ -84,11 +84,33 @@ def _build_crc32c_table() -> list[int]:
 _CRC32C_TABLE = _build_crc32c_table()
 
 
-def crc32c(data: bytes) -> int:
+def crc32c_python(data: bytes) -> int:
+    """Pure-Python CRC-32C. Always available; used directly by the tests
+    that pin the algorithm against known fixture bytes, and as the fallback
+    when the optional accelerator below isn't installed.
+    """
     crc = 0xFFFFFFFF
     for byte in data:
         crc = (crc >> 8) ^ _CRC32C_TABLE[(crc ^ byte) & 0xFF]
     return crc ^ 0xFFFFFFFF
+
+
+try:
+    # Optional accelerator (`pip install pyhdtkit[fast]`). CRC-32C is a
+    # generic checksum, not HDT logic, so a prebuilt wheel is fair game
+    # here — and it's ~2600x faster than the loop above, which is the
+    # single largest cost in the read path once everything else is tuned.
+    # Verified to produce identical values, including the known fixture
+    # checksums the tests pin.
+    from google_crc32c import value as _crc32c_accelerated
+except ImportError:  # pragma: no cover - depends on optional install
+    _crc32c_accelerated = None
+
+
+def crc32c(data: bytes) -> int:
+    if _crc32c_accelerated is not None:
+        return _crc32c_accelerated(bytes(data))
+    return crc32c_python(data)
 
 
 def decode_log_array(data: bytes, pos: int) -> tuple[list[int], int]:
@@ -149,6 +171,13 @@ def decode_bitmap(data: bytes, pos: int) -> tuple[list[int], int]:
     return unpack_lsb_bitfields(packed, 1, totalbits), pos
 
 
+# Byte value -> its 8 bits, LSB first. Lets the numbits==1 path below expand
+# a whole byte per iteration via list.extend (C-level) instead of looping
+# once per bit.
+_BIT_OCTETS = [tuple((b >> k) & 1 for k in range(8)) for b in range(256)]
+_OCTET_VALUE = {bits: value for value, bits in enumerate(_BIT_OCTETS)}
+
+
 def unpack_lsb_bitfields(data: bytes, numbits: int, count: int) -> list[int]:
     """Unpack ``count`` fields of ``numbits`` bits each, LSB-first — as if
     ``data`` were one little-endian bit-integer sliced into consecutive
@@ -162,6 +191,19 @@ def unpack_lsb_bitfields(data: bytes, numbits: int, count: int) -> list[int]:
     This is O(n): the buffer never holds more than one machine word's worth
     of bits.
     """
+    if numbits == 1:
+        # BitmapY/BitmapZ take this path, and they're the largest arrays in
+        # a typical file (one bit per triple) — ~7x faster than the general
+        # loop below by expanding a byte at a time.
+        values: list[int] = []
+        extend = values.extend
+        for byte in data:
+            extend(_BIT_OCTETS[byte])
+        del values[count:]  # trailing padding bits in the final byte
+        return values
+    if numbits == 8:
+        return list(data[:count])
+
     mask = (1 << numbits) - 1
     values = []
     buffer = 0
@@ -180,6 +222,24 @@ def unpack_lsb_bitfields(data: bytes, numbits: int, count: int) -> list[int]:
 
 def pack_lsb_bitfields(values: list[int], numbits: int) -> bytes:
     """Inverse of ``unpack_lsb_bitfields`` — same O(n) streaming approach."""
+    if numbits == 1:
+        # Mirror of the numbits==1 fast path in unpack: consume 8 bits per
+        # iteration via a tuple->byte lookup instead of one shift per bit.
+        n = len(values)
+        whole = n - (n % 8)
+        out = bytearray()
+        append = out.append
+        octet_value = _OCTET_VALUE
+        for i in range(0, whole, 8):
+            append(octet_value[tuple(values[i : i + 8])])
+        if whole < n:
+            last = 0
+            for k in range(whole, n):
+                if values[k]:
+                    last |= 1 << (k - whole)
+            append(last)
+        return bytes(out)
+
     out = bytearray()
     buffer = 0
     bits_in_buffer = 0

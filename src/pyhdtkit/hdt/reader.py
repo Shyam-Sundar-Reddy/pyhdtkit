@@ -29,13 +29,17 @@ def read_hdt(path: str | Path) -> list[Triple]:
     dictionary, pos = decode_four_section_dictionary(data, pos)
     id_triples, _pos = decode_bitmap_triples(data, pos)
 
+    # Flatten the shared/subjects and shared/objects sections into single
+    # lists so the hot loop is three plain list indexes, instead of three
+    # method calls each re-deciding which section an ID falls in. Same
+    # mapping as FourSectionDictionary.subject_string/object_string: IDs are
+    # 1-based, with the shared section first.
+    subjects = dictionary.shared + dictionary.subjects
+    objects = dictionary.shared + dictionary.objects
+    predicates = dictionary.predicates
+
     return [
-        (
-            dictionary.subject_string(s),
-            dictionary.predicate_string(p),
-            dictionary.object_string(o),
-        )
-        for s, p, o in id_triples
+        (subjects[s - 1], predicates[p - 1], objects[o - 1]) for s, p, o in id_triples
     ]
 
 

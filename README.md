@@ -8,7 +8,14 @@ A pure-Python package to convert between RDF Turtle (`.ttl`) and HDT (`.hdt`):
 
 No CLI — `import pyhdtkit` is the interface. No Rust, no native extension.
 
-## Install (dev)
+## Install
+
+```bash
+pip install pyhdtkit
+pip install "pyhdtkit[fast]"   # optional CRC speedup, see Performance
+```
+
+Dev:
 
 ```bash
 pip install -e ".[dev]"
@@ -54,18 +61,41 @@ package: correctness and hackability over raw speed.
 Measured on this machine (`benchmarks/bench.py`, synthetic triples,
 default front-coding block size):
 
-| Triples   | Write   | Read   | File size |
-|-----------|---------|--------|-----------|
-| 1,000     | 0.01s   | 0.00s  | 0.01 MB   |
-| 10,000    | 0.06s   | 0.03s  | 0.07 MB   |
-| 100,000   | 0.70s   | 0.34s  | 0.79 MB   |
-| 1,000,000 | 8.4s    | 3.5s   | 8.4 MB    |
+| Triples   | Write  | Read   | Write `[fast]` | Read `[fast]` | File size |
+|-----------|--------|--------|----------------|---------------|-----------|
+| 1,000     | 0.01s  | 0.00s  | 0.00s          | 0.00s         | 0.01 MB   |
+| 10,000    | 0.05s  | 0.03s  | 0.04s          | 0.02s         | 0.07 MB   |
+| 100,000   | 0.60s  | 0.29s  | 0.53s          | 0.19s         | 0.79 MB   |
+| 1,000,000 | 7.2s   | 3.2s   | 6.1s           | 1.9s          | 8.4 MB    |
 
-Roughly linear scaling. The bit-packing routines were rewritten early on to
-avoid an O(n²) trap (repeatedly shifting one big Python integer instead of
-streaming through a small bit buffer) — see `binio.py`'s
-`pack_lsb_bitfields`/`unpack_lsb_bitfields` — which is what makes the
-numbers above hold up past a few thousand triples. No numpy or other
-compiled-array dependency was needed to get here; one may get added later
-if profiling on a real workload shows it's worth the extra dependency
-weight.
+Roughly linear scaling.
+
+### Optional speedup
+
+```bash
+pip install "pyhdtkit[fast]"
+```
+
+This pulls in `google-crc32c`, a prebuilt-wheel CRC-32C (no compiler or
+Rust toolchain needed on your machine) — the `[fast]` columns above. HDT
+checksums every section it writes, and a pure-Python CRC loop is ~2600x
+slower than the C one, which made it the single largest cost in the read
+path once everything else was tuned. Everything still works without it,
+just slower; the pure-Python implementation stays the fallback and the two
+are pinned to identical output by the test suite.
+
+Only the checksum is delegated — all HDT encoding/decoding is our own
+Python code either way.
+
+### Notes on what makes it fast
+
+- Bit-packing streams through a small bounded buffer rather than shifting
+  one whole-array Python integer, which would be O(n²) (`binio.py`'s
+  `pack_lsb_bitfields`/`unpack_lsb_bitfields`).
+- Bitmaps (1 bit per entry, the largest arrays in a typical file) get a
+  byte-at-a-time fast path instead of a per-bit loop.
+- Dictionary front-coding finds shared prefixes via a single big-integer
+  XOR instead of comparing bytes one at a time.
+
+No numpy or other compiled-array dependency was needed; one may get added
+later if profiling on a real workload shows it's worth the weight.

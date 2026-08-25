@@ -44,5 +44,9 @@ def bench(n: int) -> None:
 
 
 if __name__ == "__main__":
+    from pyhdtkit.hdt.binio import _crc32c_accelerated
+
+    mode = "C-backed CRC-32C" if _crc32c_accelerated is not None else "pure Python"
+    print(f"crc32c: {mode}")
     for n in (1_000, 10_000, 100_000, 1_000_000):
         bench(n)

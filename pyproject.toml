@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pyhdtkit"
-version = "0.2.0"
+version = "0.3.0"
 description = "Convert between RDF Turtle (.ttl) and HDT (.hdt) in pure Python — ttl2hdt, hdt2ttl, hdtcat."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -14,7 +14,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "google-crc32c>=1.5"]
+# Optional speedup: a prebuilt-wheel CRC-32C (no toolchain needed on the
+# user's machine). Pure Python works fine without it, just slower.
+fast = ["google-crc32c>=1.5"]
 
 [project.urls]
 Homepage = "https://github.com/Shyam-Sundar-Reddy/pyhdtkit"

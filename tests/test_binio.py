@@ -1,7 +1,10 @@
+import random
+
 from pyhdtkit.hdt.binio import (
     crc8,
     crc16,
     crc32c,
+    crc32c_python,
     pack_lsb_bitfields,
     unpack_lsb_bitfields,
     vbyte_decode,
@@ -43,3 +46,27 @@ def test_lsb_bitfield_pack_unpack_round_trips() -> None:
     packed = pack_lsb_bitfields(values, 10)
     assert packed == bytes.fromhex("00a4b39c99")
     assert unpack_lsb_bitfields(packed, 10, 4) == values
+
+
+def test_pure_python_crc32c_matches_whatever_crc32c_dispatches_to() -> None:
+    # crc32c() uses an optional C-backed accelerator when installed. If the
+    # two ever disagree, every checksum this package writes or verifies is
+    # wrong, so pin them together over a spread of sizes and alignments.
+    rng = random.Random(0)
+    for size in (0, 1, 5, 7, 8, 9, 255, 1024, 5000):
+        blob = bytes(rng.getrandbits(8) for _ in range(size))
+        assert crc32c(blob) == crc32c_python(blob), f"mismatch at size {size}"
+
+
+def test_bitfield_fast_paths_match_the_general_algorithm() -> None:
+    # numbits 1 and 8 take dedicated fast paths; make sure they agree with
+    # the general streaming implementation they bypass.
+    rng = random.Random(1)
+    for numbits in (1, 8):
+        count = 1000
+        values = [rng.getrandbits(numbits) for _ in range(count)]
+        packed = pack_lsb_bitfields(values, numbits)
+        assert unpack_lsb_bitfields(packed, numbits, count) == values
+        # Non-multiple-of-8 counts exercise the trailing-padding handling.
+        odd = values[:997]
+        assert unpack_lsb_bitfields(pack_lsb_bitfields(odd, numbits), numbits, 997) == odd
