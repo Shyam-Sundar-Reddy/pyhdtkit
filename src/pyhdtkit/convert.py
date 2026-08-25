@@ -2,7 +2,7 @@
 
 These functions are the stable Python-facing surface, backed by a from-scratch
 pure-Python HDT binary reader/writer (``pyhdtkit.hdt``) and ``rdflib`` for the
-Turtle side (``pyhdtkit.ttl``). ``hdtcat`` is still a stub.
+Turtle side (``pyhdtkit.ttl``).
 """
 
 from __future__ import annotations
@@ -68,4 +68,7 @@ def hdtcat(
     """
     if len(input_paths) < 2:
         raise ValueError("hdtcat requires at least 2 input .hdt files")
-    raise NotImplementedError("hdtcat is not implemented yet")
+    merged: set[tuple[str, str, str]] = set()
+    for path in input_paths:
+        merged.update(read_hdt(path))
+    write_hdt(list(merged), output_path)
