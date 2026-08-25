@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pyhdtkit"
-version = "0.1.0"
+version = "0.2.0"
 description = "Convert between RDF Turtle (.ttl) and HDT (.hdt) in pure Python — ttl2hdt, hdt2ttl, hdtcat."
 readme = "README.md"
 requires-python = ">=3.12"

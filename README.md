@@ -24,6 +24,13 @@ hdt2ttl("graph.hdt", "graph.ttl")
 hdtcat(["a.hdt", "b.hdt"], "combined.hdt")
 ```
 
+## Errors
+
+All three functions raise `ValueError` for anything that goes wrong — a
+missing or unreadable input file, malformed Turtle, a truncated or corrupt
+`.hdt` file, or an unwritable output path. `hdtcat` additionally requires
+at least 2 input paths.
+
 ## Status
 
 All three functions are implemented: a real HDT binary reader and writer
@@ -32,8 +39,8 @@ C extension, no wrapping an existing HDT library. `rdflib` handles Turtle
 parsing/serialization; everything HDT-specific is pure Python.
 
 The read path (`hdt2ttl`) is verified against a real `.hdt` file produced
-by independent hdt-cpp tooling, not just against our own writer — see
-`DECISIONS.md` for the byte-level format research this was built from.
+by independent hdt-cpp tooling (`tests/fixtures/snikmeta.hdt`), not just
+against our own writer.
 
 ## Performance
 
@@ -61,4 +68,4 @@ streaming through a small bit buffer) — see `binio.py`'s
 numbers above hold up past a few thousand triples. No numpy or other
 compiled-array dependency was needed to get here; one may get added later
 if profiling on a real workload shows it's worth the extra dependency
-weight, per `DECISIONS.md`.
+weight.
