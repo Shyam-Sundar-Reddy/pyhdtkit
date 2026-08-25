@@ -7,36 +7,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from pyhdtkit.hdt.binio import crc8, crc32c, unpack_lsb_bitfields, vbyte_decode
+from pyhdtkit.hdt.binio import crc8, crc32c, decode_log_array, vbyte_decode
 from pyhdtkit.hdt.control_info import parse_control_info
-
-
-def _decode_log_array(data: bytes, pos: int) -> tuple[list[int], int]:
-    """Decode one LogSequence2 array (see DECISIONS.md section 5): a
-    bit-packed list of unsigned ints, used here for a PFC section's block
-    start offsets (one per block, plus a trailing end-of-buffer sentinel).
-    """
-    start = pos
-    _type = data[pos]
-    pos += 1
-    numbits = data[pos]
-    pos += 1
-    numentries, pos = vbyte_decode(data, pos)
-    header_end = pos
-    stored_crc8 = data[pos]
-    pos += 1
-    if crc8(data[start:header_end]) != stored_crc8:
-        raise ValueError(f"LogSequence2 header CRC8 mismatch at offset {start}")
-
-    nbytes = (numbits * numentries + 7) // 8
-    packed = data[pos : pos + nbytes]
-    pos += nbytes
-    stored_crc32 = int.from_bytes(data[pos : pos + 4], "little")
-    pos += 4
-    if crc32c(packed) != stored_crc32:
-        raise ValueError(f"LogSequence2 data CRC32C mismatch at offset {start}")
-
-    return unpack_lsb_bitfields(packed, numbits, numentries), pos
 
 
 def decode_pfc_section(data: bytes, pos: int) -> tuple[list[str], int]:
@@ -56,7 +28,7 @@ def decode_pfc_section(data: bytes, pos: int) -> tuple[list[str], int]:
     if crc8(data[sec_start:header_end]) != stored_crc8:
         raise ValueError(f"PFC section header CRC8 mismatch at offset {sec_start}")
 
-    block_offsets, pos = _decode_log_array(data, pos)
+    block_offsets, pos = decode_log_array(data, pos)
 
     buf = data[pos : pos + nbytes]
     pos += nbytes

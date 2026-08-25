@@ -9,6 +9,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from pyhdtkit.hdt.reader import read_hdt
+from pyhdtkit.ttl import serialize_ttl
+
 
 def ttl2hdt(
     input_path: str | Path,
@@ -44,7 +47,8 @@ def hdt2ttl(
         ValueError: The ``.hdt`` file could not be read or the ``.ttl`` file could
             not be written (e.g. a malformed HDT file, or an unwritable output path).
     """
-    raise NotImplementedError("hdt2ttl is not implemented yet")
+    triples = read_hdt(input_path)
+    serialize_ttl(triples, output_path)
 
 
 def hdtcat(

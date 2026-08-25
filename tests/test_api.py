@@ -1,7 +1,11 @@
+from pathlib import Path
+
 import pytest
 
 import pyhdtkit
 from pyhdtkit import hdt2ttl, hdtcat, ttl2hdt
+
+FIXTURE = Path(__file__).parent / "fixtures" / "snikmeta.hdt"
 
 
 def test_exports() -> None:
@@ -21,6 +25,12 @@ def test_ttl2hdt_not_implemented_yet(tmp_path) -> None:
         ttl2hdt(tmp_path / "in.ttl", tmp_path / "out.hdt")
 
 
-def test_hdt2ttl_not_implemented_yet(tmp_path) -> None:
-    with pytest.raises(NotImplementedError):
-        hdt2ttl(tmp_path / "in.hdt", tmp_path / "out.ttl")
+def test_hdt2ttl_converts_real_fixture(tmp_path) -> None:
+    out = tmp_path / "snikmeta.ttl"
+    hdt2ttl(FIXTURE, out)
+    ttl = out.read_text(encoding="utf-8")
+    assert ttl
+    assert "@prefix" in ttl or "<http" in ttl
+    # Known content of this fixture (confirmed via manual decode, see
+    # DECISIONS.md sec. 7): 328 triples, including this rdfs:label.
+    assert "application component" in ttl

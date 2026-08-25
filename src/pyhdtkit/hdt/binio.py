@@ -91,6 +91,64 @@ def crc32c(data: bytes) -> int:
     return crc ^ 0xFFFFFFFF
 
 
+def decode_log_array(data: bytes, pos: int) -> tuple[list[int], int]:
+    """Decode one LogSequence2 array (DECISIONS.md section 5): ``[type]
+    [numbits][numentries VByte][CRC8][packed entries][CRC32C]``. Used both
+    for a PFC dictionary section's block-start offsets and for a
+    BitmapTriples ArrayY/ArrayZ (predicate/object ID lists) — identical
+    on-disk shape in both places.
+    """
+    start = pos
+    _type = data[pos]
+    pos += 1
+    numbits = data[pos]
+    pos += 1
+    numentries, pos = vbyte_decode(data, pos)
+    header_end = pos
+    stored_crc8 = data[pos]
+    pos += 1
+    if crc8(data[start:header_end]) != stored_crc8:
+        raise ValueError(f"array header CRC8 mismatch at offset {start}")
+
+    nbytes = (numbits * numentries + 7) // 8
+    packed = data[pos : pos + nbytes]
+    pos += nbytes
+    stored_crc32 = int.from_bytes(data[pos : pos + 4], "little")
+    pos += 4
+    if crc32c(packed) != stored_crc32:
+        raise ValueError(f"array data CRC32C mismatch at offset {start}")
+
+    return unpack_lsb_bitfields(packed, numbits, numentries), pos
+
+
+def decode_bitmap(data: bytes, pos: int) -> tuple[list[int], int]:
+    """Decode one bitmap (DECISIONS.md section 7b): same shape as
+    ``decode_log_array`` but carrying a bit count instead of an entry
+    count, and no separate numbits byte (each entry is 1 bit by
+    definition): ``[type][VByte totalbits][CRC8][packed bits][CRC32C]``.
+    Used for BitmapTriples' BitmapY/BitmapZ.
+    """
+    start = pos
+    _type = data[pos]
+    pos += 1
+    totalbits, pos = vbyte_decode(data, pos)
+    header_end = pos
+    stored_crc8 = data[pos]
+    pos += 1
+    if crc8(data[start:header_end]) != stored_crc8:
+        raise ValueError(f"bitmap header CRC8 mismatch at offset {start}")
+
+    nbytes = (totalbits + 7) // 8
+    packed = data[pos : pos + nbytes]
+    pos += nbytes
+    stored_crc32 = int.from_bytes(data[pos : pos + 4], "little")
+    pos += 4
+    if crc32c(packed) != stored_crc32:
+        raise ValueError(f"bitmap data CRC32C mismatch at offset {start}")
+
+    return unpack_lsb_bitfields(packed, 1, totalbits), pos
+
+
 def unpack_lsb_bitfields(data: bytes, numbits: int, count: int) -> list[int]:
     """Unpack ``count`` fields of ``numbits`` bits each, LSB-first: treat
     ``data`` as one little-endian bit-integer and slice out consecutive
