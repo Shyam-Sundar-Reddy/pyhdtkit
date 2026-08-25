@@ -1,4 +1,11 @@
-# pyhdtkit
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Shyam-Sundar-Reddy/pyhdtkit/main/docs/logo-wordmark-dark.svg">
+  <img src="https://raw.githubusercontent.com/Shyam-Sundar-Reddy/pyhdtkit/main/docs/logo-wordmark-light.svg" alt="pyhdtkit" height="60">
+</picture>
+
+[![Tests](https://github.com/Shyam-Sundar-Reddy/pyhdtkit/actions/workflows/ci.yml/badge.svg)](https://github.com/Shyam-Sundar-Reddy/pyhdtkit/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/pyhdtkit.svg)](https://pypi.org/project/pyhdtkit/)
+[![PyPI license](https://img.shields.io/pypi/l/pyhdtkit.svg)](https://pypi.org/project/pyhdtkit/)
 
 A pure-Python package to convert between RDF Turtle (`.ttl`) and HDT (`.hdt`):
 
@@ -76,16 +83,26 @@ Roughly linear scaling.
 pip install "pyhdtkit[fast]"
 ```
 
-This pulls in `google-crc32c`, a prebuilt-wheel CRC-32C (no compiler or
-Rust toolchain needed on your machine) — the `[fast]` columns above. HDT
-checksums every section it writes, and a pure-Python CRC loop is ~2600x
-slower than the C one, which made it the single largest cost in the read
-path once everything else was tuned. Everything still works without it,
-just slower; the pure-Python implementation stays the fallback and the two
-are pinned to identical output by the test suite.
+This pulls in `google-crc32c` — the `[fast]` columns above. HDT checksums
+every section it writes, and a pure-Python CRC loop is ~2600x slower than
+a compiled one, which made it the single largest cost in the read path
+once everything else was tuned.
 
-Only the checksum is delegated — all HDT encoding/decoding is our own
-Python code either way.
+Being precise about what this is: `google-crc32c` wraps
+[`google/crc32c`](https://github.com/google/crc32c), a **compiled C++
+library**. It ships as a prebuilt wheel for CPython 3.9–3.14 on Windows
+x64, macOS (Intel/ARM), and glibc Linux (x86_64/i686/aarch64), so you
+don't need a compiler — but there is compiled C++ running under the hood,
+and there is **no musl wheel**, so on Alpine this extra would try to build
+from source.
+
+None of that touches the default install: `pip install pyhdtkit` pulls
+only `rdflib` (itself pure Python) and contains zero compiled code. The
+pure-Python CRC stays the fallback, and the test suite pins the two
+implementations to identical output and runs green in both modes.
+
+Only the checksum is ever delegated — all HDT encoding and decoding is our
+own Python code either way.
 
 ### Notes on what makes it fast
 

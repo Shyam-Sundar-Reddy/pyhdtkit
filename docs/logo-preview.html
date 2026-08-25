@@ -1,0 +1,52 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>pyhdtkit logo preview</title>
+<style>
+  body { font-family: ui-sans-serif, Inter, "Segoe UI", system-ui, sans-serif; margin: 0; padding: 32px; background: #f6f7f9; color: #14171c; }
+  h1 { font-size: 18px; margin: 0 0 24px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: #6b7280; margin: 32px 0 12px; font-weight: 600; }
+  .panel { border-radius: 12px; padding: 28px; border: 1px solid #e3e6ea; }
+  .light { background: #ffffff; }
+  .dark  { background: #0d1117; border-color: #222; }
+  .row { display: flex; align-items: center; gap: 40px; flex-wrap: wrap; }
+  .sizes { display: flex; align-items: flex-end; gap: 28px; }
+  .cap { font-size: 11px; color: #6b7280; margin-top: 8px; text-align: center; }
+  .dark .cap { color: #8b949e; }
+  .badges img { height: 20px; vertical-align: middle; margin-right: 4px; }
+</style>
+
+<h1>pyhdtkit — logo preview</h1>
+
+<h2>Wordmark — light (used on GitHub light mode &amp; PyPI)</h2>
+<div class="panel light">
+  <img src="logo-wordmark-light.svg" alt="pyhdtkit" height="60">
+</div>
+
+<h2>Wordmark — dark (GitHub dark mode)</h2>
+<div class="panel dark">
+  <img src="logo-wordmark-dark.svg" alt="pyhdtkit" height="60">
+</div>
+
+<h2>Icon at real sizes (favicon → README)</h2>
+<div class="panel light">
+  <div class="sizes">
+    <div><img src="logo.svg" width="16"><div class="cap">16px</div></div>
+    <div><img src="logo.svg" width="24"><div class="cap">24px</div></div>
+    <div><img src="logo.svg" width="32"><div class="cap">32px</div></div>
+    <div><img src="logo.svg" width="64"><div class="cap">64px</div></div>
+    <div><img src="logo.svg" width="100"><div class="cap">100px</div></div>
+  </div>
+</div>
+
+<h2>How the README header will look</h2>
+<div class="panel light">
+  <img src="logo-wordmark-light.svg" alt="pyhdtkit" height="60">
+  <div class="badges" style="margin-top:14px">
+    <img src="https://img.shields.io/badge/Tests-passing-brightgreen" alt="">
+    <img src="https://img.shields.io/badge/pypi-v0.3.0-blue" alt="">
+    <img src="https://img.shields.io/badge/license-MIT-green" alt="">
+  </div>
+  <p style="max-width:60ch;line-height:1.6;color:#3c424b">
+    Convert between RDF Turtle (<code>.ttl</code>) and HDT (<code>.hdt</code>) in pure Python.
+  </p>
+</div>

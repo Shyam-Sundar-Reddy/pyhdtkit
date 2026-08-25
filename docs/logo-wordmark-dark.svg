@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 90" width="340" height="90" role="img" aria-label="pyhdtkit">
+  <g transform="translate(5,5) scale(0.8)">
+    <g fill="none" stroke="#35bfa9" stroke-width="3" stroke-linecap="round" opacity="0.9">
+      <path d="M29,22 L41,22" />
+      <path d="M59,22 L71,22" />
+    </g>
+    <circle cx="20" cy="22" r="9" fill="#5ed3c0" />
+    <circle cx="50" cy="22" r="8" fill="#35bfa9" />
+    <circle cx="80" cy="22" r="8" fill="#35bfa9" />
+    <rect x="13" y="45" width="74" height="9" rx="4.5" fill="#5ed3c0" />
+    <rect x="13" y="60" width="57" height="9" rx="4.5" fill="#35bfa9" />
+    <rect x="13" y="75" width="40" height="9" rx="4.5" fill="#2a9d8f" />
+  </g>
+  <text x="102" y="58" font-family="ui-sans-serif, Inter, Segoe UI, system-ui, sans-serif" font-size="42" font-weight="800" letter-spacing="-1" fill="#e7eaee">pyhdtkit</text>
+</svg>
