@@ -150,22 +150,49 @@ def decode_bitmap(data: bytes, pos: int) -> tuple[list[int], int]:
 
 
 def unpack_lsb_bitfields(data: bytes, numbits: int, count: int) -> list[int]:
-    """Unpack ``count`` fields of ``numbits`` bits each, LSB-first: treat
-    ``data`` as one little-endian bit-integer and slice out consecutive
+    """Unpack ``count`` fields of ``numbits`` bits each, LSB-first — as if
+    ``data`` were one little-endian bit-integer sliced into consecutive
     numbits-wide chunks starting from bit 0.
+
+    Streams through a small bit buffer rather than materializing that
+    whole-array bit-integer directly (``int.from_bytes`` then repeated
+    shifts): Python ints are immutable, so building one covering the whole
+    array and shifting it per entry is O(n^2) for large arrays — measured
+    ~1s of pure overhead at 100k entries alone (see benchmarks/bench.py).
+    This is O(n): the buffer never holds more than one machine word's worth
+    of bits.
     """
-    total = int.from_bytes(data, "little")
     mask = (1 << numbits) - 1
-    return [(total >> (i * numbits)) & mask for i in range(count)]
+    values = []
+    buffer = 0
+    bits_in_buffer = 0
+    byte_pos = 0
+    for _ in range(count):
+        while bits_in_buffer < numbits:
+            buffer |= data[byte_pos] << bits_in_buffer
+            byte_pos += 1
+            bits_in_buffer += 8
+        values.append(buffer & mask)
+        buffer >>= numbits
+        bits_in_buffer -= numbits
+    return values
 
 
 def pack_lsb_bitfields(values: list[int], numbits: int) -> bytes:
-    """Inverse of ``unpack_lsb_bitfields``."""
-    total = 0
-    for i, v in enumerate(values):
-        total |= v << (i * numbits)
-    nbytes = (numbits * len(values) + 7) // 8
-    return total.to_bytes(nbytes, "little")
+    """Inverse of ``unpack_lsb_bitfields`` — same O(n) streaming approach."""
+    out = bytearray()
+    buffer = 0
+    bits_in_buffer = 0
+    for v in values:
+        buffer |= v << bits_in_buffer
+        bits_in_buffer += numbits
+        while bits_in_buffer >= 8:
+            out.append(buffer & 0xFF)
+            buffer >>= 8
+            bits_in_buffer -= 8
+    if bits_in_buffer > 0:
+        out.append(buffer & 0xFF)
+    return bytes(out)
 
 
 def bits_needed(max_value: int) -> int:
