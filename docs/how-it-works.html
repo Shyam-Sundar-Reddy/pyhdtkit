@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From Turtle to HDT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+
+<style>
+  :root{
+    --ground:#f6f9f8; --surface:#ffffff; --surface-2:#eef4f3;
+    --ink:#0f1e1d; --ink-2:#46605d; --muted:#6f8582; --rule:#d9e4e2;
+    --accent:#0d7a70; --accent-2:#35bfa9; --accent-wash:#e4f2ef;
+    --sec-global:#748b89; --sec-header:#40738f;
+    --sec-dict:#0d7a70; --sec-tri:#a8752a;
+    --maxw:1080px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#0a1312; --surface:#101d1b; --surface-2:#152422;
+      --ink:#e3efed; --ink-2:#a9bebb; --muted:#839996; --rule:#223533;
+      --accent:#35bfa9; --accent-2:#5ed3c0; --accent-wash:#12302c;
+      --sec-global:#94a8a6; --sec-header:#71a6c5; --sec-dict:#35bfa9; --sec-tri:#d9a54a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0a1312; --surface:#101d1b; --surface-2:#152422;
+    --ink:#e3efed; --ink-2:#a9bebb; --muted:#839996; --rule:#223533;
+    --accent:#35bfa9; --accent-2:#5ed3c0; --accent-wash:#12302c;
+    --sec-global:#94a8a6; --sec-header:#71a6c5; --sec-dict:#35bfa9; --sec-tri:#d9a54a;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--ground); color:var(--ink);
+    font-family:"IBM Plex Serif",Georgia,serif; font-size:16.5px; line-height:1.65;
+    margin:0; padding:0 24px 96px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto}
+  h1,h2,h3,.num,.stat-n{font-family:"IBM Plex Sans",system-ui,sans-serif}
+  code,pre,.mono,.hex,.num,.stat-n{font-family:"IBM Plex Mono",ui-monospace,monospace}
+  p{max-width:64ch}
+  code{font-size:.92em}
+
+  .mast{padding:72px 0 40px; border-bottom:1px solid var(--rule)}
+  .mark{display:flex; align-items:center; gap:12px; margin-bottom:28px}
+  .mark svg{width:34px; height:34px; flex:none}
+  .mark span{font-family:"IBM Plex Sans",sans-serif; font-weight:700; font-size:19px; letter-spacing:-.02em}
+  h1{
+    font-size:clamp(38px,6.4vw,68px); line-height:1.02; letter-spacing:-.035em;
+    font-weight:700; margin:0 0 20px; text-wrap:balance;
+  }
+  h1 em{font-style:normal; color:var(--accent)}
+  .lede{font-size:19px; color:var(--ink-2); max-width:60ch; margin:0}
+  .stats{display:flex; flex-wrap:wrap; gap:36px; margin-top:38px}
+  .stat-n{font-size:27px; font-weight:600; color:var(--accent); font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+  .stat-l{font-size:11.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--muted);
+          font-family:"IBM Plex Sans",sans-serif; margin-top:3px}
+
+  .layer{position:relative; display:grid; grid-template-columns:56px 1fr; gap:0 26px;
+         padding:52px 0; border-bottom:1px solid var(--rule)}
+  .layer::before{content:""; position:absolute; left:19px; top:0; height:100%; width:1px;
+                 background:var(--rule)}
+  .layer:last-of-type::before{height:78px}
+  .num{position:relative; z-index:1; width:38px; height:38px; border-radius:50%;
+       border:1px solid var(--rule); background:var(--ground); color:var(--accent);
+       display:flex; align-items:center; justify-content:center;
+       font-size:12.5px; font-weight:600; font-variant-numeric:tabular-nums}
+  h2{font-size:26px; letter-spacing:-.02em; margin:2px 0 6px; font-weight:700; text-wrap:balance}
+  .fn{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--muted); margin:0 0 16px}
+  .fn code{color:var(--accent)}
+
+  .io{display:grid; gap:16px; margin-top:22px}
+  .io-2{grid-template-columns:1fr 1fr}
+  @media (max-width:760px){.io-2{grid-template-columns:1fr}}
+  .panel{background:var(--surface); border:1px solid var(--rule); border-radius:7px; overflow:hidden}
+  .panel-head{display:flex; justify-content:space-between; align-items:center; gap:12px;
+    font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+    color:var(--muted); padding:9px 13px; border-bottom:1px solid var(--rule); background:var(--surface-2)}
+  .panel-head b{font-weight:500; color:var(--accent); white-space:nowrap}
+  .panel pre{margin:0; padding:15px 13px; overflow-x:auto; font-size:12.5px; line-height:1.75; color:var(--ink)}
+  .panel pre.tight{line-height:1.6}
+  .dim{color:var(--muted)}
+  .hl{color:var(--accent); font-weight:600}
+  .lit{color:var(--sec-tri)}
+
+  figure{margin:26px 0 0; padding:0}
+  figure svg{display:block; width:100%; height:auto; max-width:100%; color:var(--ink-2)}
+  .figbox{background:var(--surface); border:1px solid var(--rule); border-radius:7px; padding:20px 18px; overflow-x:auto}
+  figcaption{font-size:13px; color:var(--muted); margin-top:11px; max-width:64ch; line-height:1.55}
+
+  .hexwrap{overflow-x:auto}
+  .hex{font-size:12.5px; line-height:2.05; white-space:pre; padding:15px 13px; margin:0}
+  .hex b{font-weight:500; padding:2px 3px; border-radius:3px}
+  .b-cookie{color:#fff; background:var(--accent)}
+  .b-type{color:var(--sec-tri); background:color-mix(in srgb, var(--sec-tri) 15%, transparent)}
+  .b-fmt{color:var(--ink-2)}
+  .b-props{color:var(--sec-header); background:color-mix(in srgb, var(--sec-header) 14%, transparent)}
+  .b-crc{color:var(--muted); background:color-mix(in srgb, var(--muted) 15%, transparent)}
+  .legend{display:flex; flex-wrap:wrap; gap:7px 18px; padding:11px 13px; border-top:1px solid var(--rule);
+    background:var(--surface-2); font-family:"IBM Plex Mono",monospace; font-size:10.5px;
+    letter-spacing:.05em; color:var(--muted)}
+  .legend i{font-style:normal; display:inline-flex; align-items:center; gap:6px}
+  .sw{width:9px; height:9px; border-radius:2px; display:inline-block}
+
+  .note{border-left:2px solid var(--accent); background:var(--accent-wash);
+        padding:15px 18px; border-radius:0 6px 6px 0; margin-top:24px}
+  .note p{margin:0; font-size:15px; color:var(--ink-2); max-width:62ch}
+  .note strong{color:var(--ink)}
+
+  table{border-collapse:collapse; width:100%; font-size:13.5px; margin:0}
+  th,td{text-align:left; padding:9px 13px; border-bottom:1px solid var(--rule); vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  th{font-family:"IBM Plex Sans",sans-serif; font-size:10.5px; letter-spacing:.09em;
+     text-transform:uppercase; color:var(--muted); font-weight:600}
+  td.n{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap}
+
+  footer{padding:52px 0 0; color:var(--muted); font-size:13.5px}
+  footer a{color:var(--accent)}
+  a:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px}
+  @media (max-width:700px){
+    .layer{grid-template-columns:1fr; gap:16px}
+    .layer::before{display:none}
+    body{padding:0 18px 72px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <div class="mark">
+    <svg viewBox="0 0 100 100" role="img" aria-label="pyhdtkit">
+      <g fill="none" stroke="var(--accent-2)" stroke-width="3" stroke-linecap="round" opacity=".85">
+        <path d="M29,22 L41,22"/><path d="M59,22 L71,22"/>
+      </g>
+      <circle cx="20" cy="22" r="9" fill="var(--accent)"/>
+      <circle cx="50" cy="22" r="8" fill="var(--accent-2)"/>
+      <circle cx="80" cy="22" r="8" fill="var(--accent-2)"/>
+      <rect x="13" y="45" width="74" height="9" rx="4.5" fill="var(--accent)"/>
+      <rect x="13" y="60" width="57" height="9" rx="4.5" fill="var(--accent-2)"/>
+      <rect x="13" y="75" width="40" height="9" rx="4.5" fill="var(--accent-2)" opacity=".72"/>
+    </svg>
+    <span>pyhdtkit</span>
+  </div>
+
+  <h1>From Turtle <em>to</em> HDT</h1>
+  <p class="lede">What actually happens between <code>ttl2hdt("graph.ttl", "graph.hdt")</code> and the
+  bytes on disk — six layers, traced with the real values from a three-triple file.</p>
+
+  <div class="stats">
+    <div><div class="stat-n">3</div><div class="stat-l">triples in</div></div>
+    <div><div class="stat-n">376</div><div class="stat-l">bytes out</div></div>
+    <div><div class="stat-n">4</div><div class="stat-l">file sections</div></div>
+    <div><div class="stat-n">0</div><div class="stat-l">compiled deps</div></div>
+  </div>
+</header>
+
+<main>
+
+<section class="layer">
+  <div><div class="num">01</div></div>
+  <div>
+    <h2>Parse the Turtle</h2>
+    <p class="fn"><code>pyhdtkit.ttl.parse_ttl()</code> — rdflib does the grammar</p>
+    <p>Turtle's conveniences — prefixes, shorthand, punctuation — exist for humans and carry no
+    information HDT needs. rdflib expands all of it, and every term is flattened to one canonical
+    string: IRIs lose their angle brackets, blank nodes become <code>_:label</code>, literals keep
+    their N-Triples spelling. From here down, a triple is just three strings.</p>
+    <div class="io io-2">
+      <div class="panel">
+        <div class="panel-head"><span>input · graph.ttl</span><b>123 B</b></div>
+<pre>@prefix ex: &lt;http://example.org/&gt; .
+
+ex:alice ex:knows ex:bob .
+ex:alice ex:name <span class="lit">"Alice"@en</span> .
+ex:bob   ex:knows ex:alice .</pre>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>output · 3 triples</span><b>strings</b></div>
+<pre class="tight"><span class="dim">(</span>http://example.org/alice<span class="dim">,</span>
+ http://example.org/knows<span class="dim">,</span>
+ http://example.org/bob<span class="dim">)</span>
+
+<span class="dim">(</span>http://example.org/alice<span class="dim">,</span>
+ http://example.org/name<span class="dim">,</span>
+ <span class="lit">"Alice"@en</span><span class="dim">)</span>
+
+<span class="dim">(</span>http://example.org/bob<span class="dim">,</span>
+ http://example.org/knows<span class="dim">,</span>
+ http://example.org/alice<span class="dim">)</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="layer">
+  <div><div class="num">02</div></div>
+  <div>
+    <h2>Sort the terms into four sections</h2>
+    <p class="fn"><code>pyhdtkit.hdt.dictionary.build_four_section_dictionary()</code></p>
+    <p>HDT never stores a term twice. Every distinct string goes into a dictionary once and is
+    replaced by a number. The reason there are <em>four</em> sections rather than three is overlap:
+    a term used as both subject and object — very common in a graph, where one node points at
+    another — would otherwise be stored twice. Those terms are pulled into a shared section and
+    get one ID valid in both roles.</p>
+
+    <figure>
+      <div class="figbox">
+        <svg viewBox="0 0 620 250" role="img" aria-label="Terms used as subjects and terms used as objects overlap; the overlap becomes the shared section, leaving subject-only and object-only sections, while predicates are partitioned separately.">
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+          <circle cx="235" cy="98" r="88" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+          <circle cx="355" cy="98" r="88" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+          <path d="M295,26.5 A88,88 0 0,1 295,169.5 A88,88 0 0,1 295,26.5 z" fill="var(--sec-dict)" opacity=".16"/>
+          <text x="150" y="34" font-size="12" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">used as subject</text>
+          <text x="440" y="34" font-size="12" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">used as object</text>
+          <text x="176" y="104" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle" opacity=".45">(none)</text>
+          <text x="176" y="122" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle" opacity=".45">subjects</text>
+          <text x="295" y="92" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-dict)" text-anchor="middle" font-weight="600">alice</text>
+          <text x="295" y="110" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-dict)" text-anchor="middle" font-weight="600">bob</text>
+          <text x="295" y="130" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-dict)" text-anchor="middle">shared</text>
+          <text x="414" y="104" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">"Alice"@en</text>
+          <text x="414" y="122" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle" opacity=".7">objects</text>
+          <line x1="295" y1="188" x2="295" y2="206" stroke="var(--sec-dict)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="295" y="226" font-size="11.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-dict)" text-anchor="middle">one ID, valid as subject and object</text>
+          <rect x="500" y="62" width="104" height="72" rx="6" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+          <text x="552" y="48" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle" opacity=".6">never shared</text>
+          <text x="552" y="90" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">knows</text>
+          <text x="552" y="108" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">name</text>
+          <text x="552" y="126" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle" opacity=".7">predicates</text>
+        </svg>
+      </div>
+      <figcaption>Predicates get their own ID space because a predicate never occupies a subject or
+      object slot in the triples encoding — so sharing with them would save nothing.</figcaption>
+    </figure>
+
+    <div class="io">
+      <div class="panel">
+        <div class="panel-head"><span>the dictionary · sorted, IDs are 1-based rank</span><b>4 sections</b></div>
+        <table>
+          <tr><th>Section</th><th>Terms</th><th style="text-align:right">IDs</th></tr>
+          <tr><td><code style="color:var(--sec-dict)">shared</code></td><td><code>http://example.org/alice</code><br><code>http://example.org/bob</code></td><td class="n">1, 2</td></tr>
+          <tr><td><code>subjects</code></td><td class="dim">empty — every subject here is also an object</td><td class="n">—</td></tr>
+          <tr><td><code>predicates</code></td><td><code>http://example.org/knows</code><br><code>http://example.org/name</code></td><td class="n">1, 2</td></tr>
+          <tr><td><code>objects</code></td><td><code>"Alice"@en</code></td><td class="n">3</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="note"><p><strong>Sorting is the index.</strong> Terms are sorted bytewise and a term's
+    ID <em>is</em> its position in that order. Nothing extra is stored to map strings to numbers — and
+    that ordering is what makes the next layer's compression possible.</p></div>
+  </div>
+</section>
+
+<section class="layer">
+  <div><div class="num">03</div></div>
+  <div>
+    <h2>Replace every string with its ID</h2>
+    <p class="fn">three strings per triple → three small integers</p>
+    <p>Object IDs continue past the shared section: IDs 1–2 are the shared terms, so the
+    object-only term <code>"Alice"@en</code> is ID 3. The graph is now pure arithmetic, and the
+    strings are not touched again until someone reads the file back.</p>
+    <div class="io io-2">
+      <div class="panel">
+        <div class="panel-head"><span>before</span><b>~120 B of text</b></div>
+<pre class="tight">alice   knows   bob
+alice   name    <span class="lit">"Alice"@en</span>
+bob     knows   alice</pre>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><span>after · sorted SPO</span><b>9 integers</b></div>
+<pre class="tight"><span class="hl">1</span>   <span class="hl">1</span>   <span class="hl">2</span>
+<span class="hl">1</span>   <span class="hl">2</span>   <span class="hl">3</span>
+<span class="hl">2</span>   <span class="hl">1</span>   <span class="hl">1</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="layer">
+  <div><div class="num">04</div></div>
+  <div>
+    <h2>Front-code the dictionary</h2>
+    <p class="fn"><code>pyhdtkit.hdt.dictionary.encode_pfc_section()</code></p>
+    <p>Sorted IRIs share long prefixes with their neighbours, and sorting has already put those
+    neighbours next to each other. So each string records only how many leading bytes it borrows
+    from the previous one, then its own tail. The first string in every block of 16 is written in
+    full, which is what stops a reader having to decode from the beginning of the file.</p>
+    <div class="io">
+      <div class="panel">
+        <div class="panel-head"><span>shared section · string buffer</span><b>48 B → 30 B</b></div>
+<pre><span class="dim">block start ─</span> <span class="hl">http://example.org/alice</span><span class="dim">\0</span>
+<span class="dim">            └</span> <span class="dim">[</span><span class="lit">19</span><span class="dim">]</span> <span class="hl">bob</span><span class="dim">\0</span>
+                 <span class="dim">↑</span>
+                 <span class="dim">borrow the first </span><span class="lit">19</span><span class="dim"> bytes — "http://example.org/"</span>
+                 <span class="dim">then store only the 3 that differ</span></pre>
+        <div class="legend"><i>on disk: <code>93 62 6f 62 00</code> &nbsp;·&nbsp; <code>0x93</code> = VByte(19) &nbsp;·&nbsp; <code>62 6f 62</code> = <code>bob</code></i></div>
+      </div>
+    </div>
+    <div class="note"><p><strong>Why the number looks wrong.</strong> HDT's VByte sets the high bit on
+    the <em>last</em> byte of a value rather than on the continuation bytes — the reverse of most
+    varint schemes. That is why 19 is written <code>0x93</code> and not <code>0x13</code>.</p></div>
+  </div>
+</section>
+
+<section class="layer">
+  <div><div class="num">05</div></div>
+  <div>
+    <h2>Encode the triples as a tree</h2>
+    <p class="fn"><code>pyhdtkit.hdt.triples.encode_bitmap_triples()</code></p>
+    <p>Sorted SPO triples repeat constantly: a subject repeats for each of its predicates, a
+    predicate for each of its objects. BitmapTriples stores each level once and spends a single bit
+    marking where each group ends. Subject IDs are never written down at all — they are recovered
+    by counting end-markers on the way through.</p>
+
+    <figure>
+      <div class="figbox">
+        <svg viewBox="0 0 620 400" role="img" aria-label="The three sorted triples drawn as a subject-predicate-object tree, with the four BitmapTriples arrays aligned beneath: ArrayY holds predicate IDs, BitmapY marks each subject's last predicate, ArrayZ holds object IDs, BitmapZ marks each pair's last object.">
+          <text x="24" y="30" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" opacity=".6">SUBJECT</text>
+          <circle cx="190" cy="52" r="17" fill="var(--sec-dict)" opacity=".18"/>
+          <text x="190" y="57" font-size="13" font-family="IBM Plex Mono, monospace" fill="var(--sec-dict)" text-anchor="middle" font-weight="600">1</text>
+          <circle cx="470" cy="52" r="17" fill="var(--sec-dict)" opacity=".18"/>
+          <text x="470" y="57" font-size="13" font-family="IBM Plex Mono, monospace" fill="var(--sec-dict)" text-anchor="middle" font-weight="600">2</text>
+
+          <line x1="190" y1="69" x2="120" y2="107" stroke="currentColor" stroke-width="1.4" opacity=".6"/>
+          <line x1="190" y1="69" x2="260" y2="107" stroke="currentColor" stroke-width="1.4" opacity=".6"/>
+          <line x1="470" y1="69" x2="470" y2="107" stroke="currentColor" stroke-width="1.4" opacity=".6"/>
+
+          <text x="24" y="128" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" opacity=".6">PREDICATE</text>
+          <circle cx="120" cy="124" r="15" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <text x="120" y="129" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">1</text>
+          <circle cx="260" cy="124" r="15" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <text x="260" y="129" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">2</text>
+          <circle cx="470" cy="124" r="15" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <text x="470" y="129" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">1</text>
+
+          <line x1="120" y1="139" x2="120" y2="177" stroke="currentColor" stroke-width="1.4" opacity=".6"/>
+          <line x1="260" y1="139" x2="260" y2="177" stroke="currentColor" stroke-width="1.4" opacity=".6"/>
+          <line x1="470" y1="139" x2="470" y2="177" stroke="currentColor" stroke-width="1.4" opacity=".6"/>
+
+          <text x="24" y="198" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" opacity=".6">OBJECT</text>
+          <circle cx="120" cy="194" r="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="3 2"/>
+          <text x="120" y="199" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">2</text>
+          <circle cx="260" cy="194" r="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="3 2"/>
+          <text x="260" y="199" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">3</text>
+          <circle cx="470" cy="194" r="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="3 2"/>
+          <text x="470" y="199" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">1</text>
+
+          <line x1="60" y1="230" x2="596" y2="230" stroke="currentColor" stroke-width="1" opacity=".25"/>
+
+          <text x="24" y="267" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" opacity=".75">ArrayY</text>
+          <rect x="98" y="250" width="44" height="24" rx="4" fill="currentColor" opacity=".09"/>
+          <text x="120" y="267" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">1</text>
+          <rect x="238" y="250" width="44" height="24" rx="4" fill="currentColor" opacity=".09"/>
+          <text x="260" y="267" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">2</text>
+          <rect x="448" y="250" width="44" height="24" rx="4" fill="currentColor" opacity=".09"/>
+          <text x="470" y="267" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">1</text>
+
+          <text x="24" y="305" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" opacity=".75">BitmapY</text>
+          <rect x="98" y="288" width="44" height="24" rx="4" fill="currentColor" opacity=".05"/>
+          <text x="120" y="305" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle" opacity=".5">0</text>
+          <rect x="238" y="288" width="44" height="24" rx="4" fill="var(--sec-tri)" opacity=".2"/>
+          <text x="260" y="305" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-tri)" text-anchor="middle" font-weight="600">1</text>
+          <rect x="448" y="288" width="44" height="24" rx="4" fill="var(--sec-tri)" opacity=".2"/>
+          <text x="470" y="305" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-tri)" text-anchor="middle" font-weight="600">1</text>
+
+          <text x="24" y="343" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" opacity=".75">ArrayZ</text>
+          <rect x="98" y="326" width="44" height="24" rx="4" fill="currentColor" opacity=".09"/>
+          <text x="120" y="343" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">2</text>
+          <rect x="238" y="326" width="44" height="24" rx="4" fill="currentColor" opacity=".09"/>
+          <text x="260" y="343" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">3</text>
+          <rect x="448" y="326" width="44" height="24" rx="4" fill="currentColor" opacity=".09"/>
+          <text x="470" y="343" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">1</text>
+
+          <text x="24" y="381" font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor" opacity=".75">BitmapZ</text>
+          <rect x="98" y="364" width="44" height="24" rx="4" fill="var(--sec-tri)" opacity=".2"/>
+          <text x="120" y="381" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-tri)" text-anchor="middle" font-weight="600">1</text>
+          <rect x="238" y="364" width="44" height="24" rx="4" fill="var(--sec-tri)" opacity=".2"/>
+          <text x="260" y="381" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-tri)" text-anchor="middle" font-weight="600">1</text>
+          <rect x="448" y="364" width="44" height="24" rx="4" fill="var(--sec-tri)" opacity=".2"/>
+          <text x="470" y="381" font-size="12.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-tri)" text-anchor="middle" font-weight="600">1</text>
+
+          <text x="596" y="305" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-tri)" text-anchor="end">1 = last predicate of this subject</text>
+          <text x="596" y="381" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-tri)" text-anchor="end">1 = last object of this pair</text>
+        </svg>
+      </div>
+      <figcaption>Reading it back: walk ArrayY left to right, taking objects from ArrayZ until BitmapZ
+      says stop; when BitmapY says stop, move to the next subject. Subject 1 owns the first two
+      columns because its BitmapY bit stays 0 until the second.</figcaption>
+    </figure>
+
+    <div class="io">
+      <div class="panel">
+        <div class="panel-head"><span>packed to bits · least-significant first</span><b>4 bytes of payload</b></div>
+<pre class="tight">BitmapY  <span class="dim">[0,1,1]</span>  1 bit each   <span class="dim">→</span>  <span class="hl">0x06</span>   <span class="dim">0000 0</span><span class="hl">110</span>
+BitmapZ  <span class="dim">[1,1,1]</span>  1 bit each   <span class="dim">→</span>  <span class="hl">0x07</span>   <span class="dim">0000 0</span><span class="hl">111</span>
+ArrayY   <span class="dim">[1,2,1]</span>  2 bits each  <span class="dim">→</span>  <span class="hl">0x19</span>   <span class="dim">00</span> <span class="hl">01 10 01</span>
+ArrayZ   <span class="dim">[2,3,1]</span>  2 bits each  <span class="dim">→</span>  <span class="hl">0x1e</span>   <span class="dim">00</span> <span class="hl">01 11 10</span></pre>
+        <div class="legend"><i>the width per entry is stored in the file, not assumed — 2 bits here, because the largest ID is 3</i></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="layer">
+  <div><div class="num">06</div></div>
+  <div>
+    <h2>Assemble the file</h2>
+    <p class="fn"><code>pyhdtkit.hdt.reader.write_hdt()</code></p>
+    <p>Four sections, each introduced by a control block that names its own format as a URI and
+    carries its own checksum. A reader walks the file section by section without needing to know in
+    advance what any of them contain.</p>
+
+    <figure>
+      <div class="figbox">
+        <svg viewBox="0 0 600 118" role="img" aria-label="The 376-byte file drawn to scale: global control info 40 bytes, header 26 bytes, dictionary 220 bytes, triples 90 bytes. The dictionary occupies well over half the file.">
+          <text x="20" y="16" font-size="10" font-family="IBM Plex Mono, monospace" fill="currentColor" opacity=".55">0</text>
+          <text x="580" y="16" font-size="10" font-family="IBM Plex Mono, monospace" fill="currentColor" opacity=".55" text-anchor="end">376</text>
+          <rect x="20" y="24" width="59.6" height="40" rx="3" fill="var(--sec-global)"/>
+          <rect x="79.6" y="24" width="38.7" height="40" fill="var(--sec-header)"/>
+          <rect x="118.3" y="24" width="327.7" height="40" fill="var(--sec-dict)"/>
+          <rect x="446" y="24" width="134" height="40" rx="3" fill="var(--sec-tri)"/>
+          <text x="49" y="82" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-global)" text-anchor="middle">global</text>
+          <text x="49" y="96" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle" opacity=".6">40 B</text>
+          <text x="99" y="82" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-header)" text-anchor="middle">header</text>
+          <text x="99" y="96" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle" opacity=".6">26 B</text>
+          <text x="282" y="82" font-size="11.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-dict)" text-anchor="middle" font-weight="600">dictionary</text>
+          <text x="282" y="96" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle" opacity=".6">220 B · 59%</text>
+          <text x="513" y="82" font-size="11.5" font-family="IBM Plex Mono, monospace" fill="var(--sec-tri)" text-anchor="middle" font-weight="600">triples</text>
+          <text x="513" y="96" font-size="10.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle" opacity=".6">90 B · 24%</text>
+        </svg>
+      </div>
+      <figcaption>At three triples HDT is <em>bigger</em> than the Turtle it came from — 123 bytes
+      in, 376 out — because the format's fixed scaffolding has nothing to amortise against yet.
+      The dictionary dominates for the same reason: the strings are the one thing that cannot be
+      compressed away. Both ratios invert as a graph grows, since terms repeat and triples do not —
+      a million triples land at about 8.4 bytes each.</figcaption>
+    </figure>
+
+    <div class="io">
+      <div class="panel">
+        <div class="panel-head"><span>the first 40 bytes · global control information</span><b>real output</b></div>
+        <div class="hexwrap">
+<pre class="hex"><b class="b-cookie">24 48 44 54</b> <b class="b-type">01</b> <b class="b-fmt">3c 68 74 74 70 3a 2f 2f 70 75 72 6c 2e 6f 72 67 2f 48 44 54 2f 68 64 74 23 48 44 54 76 31 3e 00</b> <b class="b-props">00</b> <b class="b-crc">76 35</b>
+<span class="dim">"$HDT"      </span><span class="lit">Global</span><span class="dim">  "&lt;http://purl.org/HDT/hdt#HDTv1&gt;\0"                                    none   CRC16</span></pre>
+        </div>
+        <div class="legend">
+          <i><span class="sw" style="background:var(--accent)"></span>magic cookie</i>
+          <i><span class="sw" style="background:var(--sec-tri)"></span>section type</i>
+          <i><span class="sw" style="background:var(--ink-2)"></span>format URI</i>
+          <i><span class="sw" style="background:var(--sec-header)"></span>properties</i>
+          <i><span class="sw" style="background:var(--muted)"></span>checksum</i>
+        </div>
+      </div>
+    </div>
+
+    <div class="note"><p><strong>Three different checksums.</strong> Control blocks use CRC-16/ARC,
+    section headers use CRC-8, and payloads use CRC-32C — none of them the CRC-32 in Python's
+    standard library. Each was identified by testing candidate algorithms against a real HDT file
+    until the computed value matched the bytes already stored there.</p></div>
+  </div>
+</section>
+
+<section class="layer">
+  <div><div class="num">↑</div></div>
+  <div>
+    <h2>Reading runs the same layers backwards</h2>
+    <p class="fn"><code>pyhdtkit.hdt.reader.read_hdt()</code> → <code>hdt2ttl()</code></p>
+    <p>Every layer above is reversible, and each verifies its checksum on the way through, so a
+    truncated or corrupt file fails at the section that broke rather than returning plausible
+    nonsense. Blank node labels are the one thing that does not survive a round trip — their names
+    are arbitrary and scoped to a single file, so the graph returns equivalent rather than
+    identical.</p>
+    <div class="io">
+      <div class="panel">
+        <div class="panel-head"><span>hdt2ttl</span><b>the inverse</b></div>
+<pre class="tight">bytes  <span class="dim">→</span>  verify CRCs, read each section's control block
+       <span class="dim">→</span>  rebuild the dictionary from front-coded blocks
+       <span class="dim">→</span>  walk BitmapY / BitmapZ back into <span class="hl">(s, p, o)</span> IDs
+       <span class="dim">→</span>  swap IDs back for strings
+       <span class="dim">→</span>  rdflib serializes Turtle</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Every value on this page is real output from <code>pyhdtkit</code> for the three-triple file in
+  layer 01 — dictionary contents, bit packing, section sizes and hex all captured from an actual
+  conversion. The HDT binary format is specified at
+  <a href="https://www.rdfhdt.org/hdt-binary-format/">rdfhdt.org</a>.</p>
+</footer>
+
+</div>
+</body>
+</html>
