@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pyhdtkit"
-version = "0.3.1"
+version = "0.3.2"
 description = "Convert between RDF Turtle (.ttl) and HDT (.hdt) in pure Python — ttl2hdt, hdt2ttl, hdtcat."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -25,3 +25,10 @@ Repository = "https://github.com/Shyam-Sundar-Reddy/pyhdtkit"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pyhdtkit"]
+
+# Ship the build notes inside the installed package, so they are readable
+# from a venv (site-packages/pyhdtkit/kt.md) and not only on GitHub.
+# force-include keeps the file at the repo root while still placing it
+# into the wheel, so nothing has to move.
+[tool.hatch.build.targets.wheel.force-include]
+"kt.md" = "pyhdtkit/kt.md"
