@@ -13,7 +13,7 @@ class Mapping:
     """
     A validated, read-only URN -> HDT file mapping.
 
-    Produced by :class:`~pyhdtkit.query.mapping.loader.MappingLoader`, not built
+    Produced by :class:`~pyhdtkit.sparql.mapping.loader.MappingLoader`, not built
     directly. Every path held here has already been checked to exist and to
     carry a ``.hdt`` extension, so later phases open them without re-checking.
     """

@@ -11,7 +11,7 @@ paths inside ``map.json`` are relative to that folder.
 
 This subpackage is deliberately isolated from ``pyhdtkit.hdt`` — the conversion
 half of the package — and imports nothing from it. See the ``ponytail:`` note in
-``pyhdtkit.query.hdt.binio`` for why the shared-looking primitives are not
+``pyhdtkit.sparql.hdt.binio`` for why the shared-looking primitives are not
 shared.
 """
 

@@ -1,5 +1,5 @@
 from pyhdtkit.convert import hdt2ttl, hdtcat, ttl2hdt
-from pyhdtkit.query import build_catalog, dataset, query
+from pyhdtkit.sparql import build_catalog, dataset, query
 
 __version__ = "0.3.2"
 

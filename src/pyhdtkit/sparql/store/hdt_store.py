@@ -30,7 +30,7 @@ READ_ONLY = "HDTStore is read-only: HDT files are immutable (see docs/data_model
 
 class HDTStore(Store):
     """
-    Read-only, context-aware Store over a :class:`~pyhdtkit.query.mapping.Mapping`.
+    Read-only, context-aware Store over a :class:`~pyhdtkit.sparql.mapping.Mapping`.
 
         store = HDTStore(MappingLoader("map.json").load())
         ds = Dataset(store=store, default_union=True)
