@@ -1,5 +1,12 @@
 from pyhdtkit.convert import hdt2ttl, hdtcat, ttl2hdt
+from pyhdtkit.query import build_catalog, dataset, query
 
 __version__ = "0.3.2"
 
-__all__ = ["__version__", "ttl2hdt", "hdt2ttl", "hdtcat"]
+__all__ = [
+    "__version__",
+    # convert: Turtle <-> HDT
+    "ttl2hdt", "hdt2ttl", "hdtcat",
+    # query: read-only SPARQL over a db folder of HDT files
+    "dataset", "query", "build_catalog",
+]
