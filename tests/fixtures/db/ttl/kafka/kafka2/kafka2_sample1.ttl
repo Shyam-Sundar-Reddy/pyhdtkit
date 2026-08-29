@@ -1,0 +1,54 @@
+@prefix core: <http://example.org/core/> .
+@prefix kf: <http://example.org/kafka/> .
+
+
+kf:broker_2_1 a kf:Broker ;
+    kf:rack "rack-21" .
+
+kf:topic_2_1_0 a kf:Topic ;
+    kf:name "payments.events.v210" ;
+    kf:partitions "3" ;
+    kf:replicationFactor "2" ;
+    kf:hostedOn kf:broker_2_1 ;
+    kf:producedBy core:svc_payments ;
+    kf:consumedBy core:svc_ledger .
+
+kf:topic_2_1_1 a kf:Topic ;
+    kf:name "ledger.events.v211" ;
+    kf:partitions "6" ;
+    kf:replicationFactor "3" ;
+    kf:hostedOn kf:broker_2_1 ;
+    kf:producedBy core:svc_ledger ;
+    kf:consumedBy core:svc_notify .
+
+kf:topic_2_1_2 a kf:Topic ;
+    kf:name "notify.events.v212" ;
+    kf:partitions "9" ;
+    kf:replicationFactor "2" ;
+    kf:hostedOn kf:broker_2_1 ;
+    kf:producedBy core:svc_notify ;
+    kf:consumedBy core:svc_audit .
+
+kf:topic_2_1_3 a kf:Topic ;
+    kf:name "audit.events.v213" ;
+    kf:partitions "12" ;
+    kf:replicationFactor "3" ;
+    kf:hostedOn kf:broker_2_1 ;
+    kf:producedBy core:svc_audit ;
+    kf:consumedBy core:svc_orders .
+
+kf:topic_2_1_4 a kf:Topic ;
+    kf:name "orders.events.v214" ;
+    kf:partitions "3" ;
+    kf:replicationFactor "2" ;
+    kf:hostedOn kf:broker_2_1 ;
+    kf:producedBy core:svc_orders ;
+    kf:consumedBy core:svc_billing .
+
+kf:topic_2_1_5 a kf:Topic ;
+    kf:name "billing.events.v215" ;
+    kf:partitions "6" ;
+    kf:replicationFactor "3" ;
+    kf:hostedOn kf:broker_2_1 ;
+    kf:producedBy core:svc_billing ;
+    kf:consumedBy core:svc_payments .

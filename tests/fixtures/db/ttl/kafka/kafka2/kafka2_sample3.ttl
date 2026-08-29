@@ -1,0 +1,72 @@
+@prefix core: <http://example.org/core/> .
+@prefix kf: <http://example.org/kafka/> .
+
+
+kf:broker_2_3 a kf:Broker ;
+    kf:rack "rack-23" .
+
+kf:topic_2_3_0 a kf:Topic ;
+    kf:name "payments.events.v230" ;
+    kf:partitions "3" ;
+    kf:replicationFactor "2" ;
+    kf:hostedOn kf:broker_2_3 ;
+    kf:producedBy core:svc_payments ;
+    kf:consumedBy core:svc_audit .
+
+kf:topic_2_3_1 a kf:Topic ;
+    kf:name "ledger.events.v231" ;
+    kf:partitions "6" ;
+    kf:replicationFactor "3" ;
+    kf:hostedOn kf:broker_2_3 ;
+    kf:producedBy core:svc_ledger ;
+    kf:consumedBy core:svc_orders .
+
+kf:topic_2_3_2 a kf:Topic ;
+    kf:name "notify.events.v232" ;
+    kf:partitions "9" ;
+    kf:replicationFactor "2" ;
+    kf:hostedOn kf:broker_2_3 ;
+    kf:producedBy core:svc_notify ;
+    kf:consumedBy core:svc_billing .
+
+kf:topic_2_3_3 a kf:Topic ;
+    kf:name "audit.events.v233" ;
+    kf:partitions "12" ;
+    kf:replicationFactor "3" ;
+    kf:hostedOn kf:broker_2_3 ;
+    kf:producedBy core:svc_audit ;
+    kf:consumedBy core:svc_payments .
+
+kf:topic_2_3_4 a kf:Topic ;
+    kf:name "orders.events.v234" ;
+    kf:partitions "3" ;
+    kf:replicationFactor "2" ;
+    kf:hostedOn kf:broker_2_3 ;
+    kf:producedBy core:svc_orders ;
+    kf:consumedBy core:svc_ledger .
+
+kf:topic_2_3_5 a kf:Topic ;
+    kf:name "billing.events.v235" ;
+    kf:partitions "6" ;
+    kf:replicationFactor "3" ;
+    kf:hostedOn kf:broker_2_3 ;
+    kf:producedBy core:svc_billing ;
+    kf:consumedBy core:svc_notify .
+
+kf:topic_2_3_6 a kf:Topic ;
+    kf:name "payments.events.v236" ;
+    kf:partitions "9" ;
+    kf:replicationFactor "2" ;
+    kf:hostedOn kf:broker_2_3 ;
+    kf:producedBy core:svc_payments ;
+    kf:consumedBy core:svc_audit .
+
+kf:topic_2_3_7 a kf:Topic ;
+    kf:name "ledger.events.v237" ;
+    kf:partitions "12" ;
+    kf:replicationFactor "3" ;
+    kf:hostedOn kf:broker_2_3 ;
+    kf:producedBy core:svc_ledger ;
+    kf:consumedBy core:svc_orders .
+
+kf:topic_2_3_0 kf:compaction "delete" .

@@ -1,0 +1,75 @@
+@prefix core: <http://example.org/core/> .
+@prefix bian: <http://example.org/bian/> .
+
+
+bian:sd_2_2_0 a bian:ServiceDomain ;
+    bian:name "Service Domain 2.2.0" ;
+    bian:businessArea "Risk Management" ;
+    bian:controlRecord bian:cr_2_2_0 ;
+    bian:supportsService core:svc_notify .
+
+bian:cr_2_2_0 a bian:ControlRecord ;
+    bian:status "active" .
+
+bian:sd_2_2_1 a bian:ServiceDomain ;
+    bian:name "Service Domain 2.2.1" ;
+    bian:businessArea "Retail Banking" ;
+    bian:controlRecord bian:cr_2_2_1 ;
+    bian:supportsService core:svc_audit .
+
+bian:cr_2_2_1 a bian:ControlRecord ;
+    bian:status "review" .
+
+bian:sd_2_2_2 a bian:ServiceDomain ;
+    bian:name "Service Domain 2.2.2" ;
+    bian:businessArea "Corporate Banking" ;
+    bian:controlRecord bian:cr_2_2_2 ;
+    bian:supportsService core:svc_orders .
+
+bian:cr_2_2_2 a bian:ControlRecord ;
+    bian:status "retired" .
+
+bian:sd_2_2_3 a bian:ServiceDomain ;
+    bian:name "Service Domain 2.2.3" ;
+    bian:businessArea "Risk Management" ;
+    bian:controlRecord bian:cr_2_2_3 ;
+    bian:supportsService core:svc_billing .
+
+bian:cr_2_2_3 a bian:ControlRecord ;
+    bian:status "active" .
+
+bian:sd_2_2_4 a bian:ServiceDomain ;
+    bian:name "Service Domain 2.2.4" ;
+    bian:businessArea "Retail Banking" ;
+    bian:controlRecord bian:cr_2_2_4 ;
+    bian:supportsService core:svc_payments .
+
+bian:cr_2_2_4 a bian:ControlRecord ;
+    bian:status "review" .
+
+bian:sd_2_2_5 a bian:ServiceDomain ;
+    bian:name "Service Domain 2.2.5" ;
+    bian:businessArea "Corporate Banking" ;
+    bian:controlRecord bian:cr_2_2_5 ;
+    bian:supportsService core:svc_ledger .
+
+bian:cr_2_2_5 a bian:ControlRecord ;
+    bian:status "retired" .
+
+bian:sd_2_2_6 a bian:ServiceDomain ;
+    bian:name "Service Domain 2.2.6" ;
+    bian:businessArea "Risk Management" ;
+    bian:controlRecord bian:cr_2_2_6 ;
+    bian:supportsService core:svc_notify .
+
+bian:cr_2_2_6 a bian:ControlRecord ;
+    bian:status "active" .
+
+bian:sd_2_2_7 a bian:ServiceDomain ;
+    bian:name "Service Domain 2.2.7" ;
+    bian:businessArea "Retail Banking" ;
+    bian:controlRecord bian:cr_2_2_7 ;
+    bian:supportsService core:svc_audit .
+
+bian:cr_2_2_7 a bian:ControlRecord ;
+    bian:status "review" .

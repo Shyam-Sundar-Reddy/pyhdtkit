@@ -1,0 +1,75 @@
+@prefix core: <http://example.org/core/> .
+@prefix bian: <http://example.org/bian/> .
+
+
+bian:sd_3_1_0 a bian:ServiceDomain ;
+    bian:name "Service Domain 3.1.0" ;
+    bian:businessArea "Retail Banking" ;
+    bian:controlRecord bian:cr_3_1_0 ;
+    bian:supportsService core:svc_notify .
+
+bian:cr_3_1_0 a bian:ControlRecord ;
+    bian:status "active" .
+
+bian:sd_3_1_1 a bian:ServiceDomain ;
+    bian:name "Service Domain 3.1.1" ;
+    bian:businessArea "Corporate Banking" ;
+    bian:controlRecord bian:cr_3_1_1 ;
+    bian:supportsService core:svc_audit .
+
+bian:cr_3_1_1 a bian:ControlRecord ;
+    bian:status "review" .
+
+bian:sd_3_1_2 a bian:ServiceDomain ;
+    bian:name "Service Domain 3.1.2" ;
+    bian:businessArea "Risk Management" ;
+    bian:controlRecord bian:cr_3_1_2 ;
+    bian:supportsService core:svc_orders .
+
+bian:cr_3_1_2 a bian:ControlRecord ;
+    bian:status "retired" .
+
+bian:sd_3_1_3 a bian:ServiceDomain ;
+    bian:name "Service Domain 3.1.3" ;
+    bian:businessArea "Retail Banking" ;
+    bian:controlRecord bian:cr_3_1_3 ;
+    bian:supportsService core:svc_billing .
+
+bian:cr_3_1_3 a bian:ControlRecord ;
+    bian:status "active" .
+
+bian:sd_3_1_4 a bian:ServiceDomain ;
+    bian:name "Service Domain 3.1.4" ;
+    bian:businessArea "Corporate Banking" ;
+    bian:controlRecord bian:cr_3_1_4 ;
+    bian:supportsService core:svc_payments .
+
+bian:cr_3_1_4 a bian:ControlRecord ;
+    bian:status "review" .
+
+bian:sd_3_1_5 a bian:ServiceDomain ;
+    bian:name "Service Domain 3.1.5" ;
+    bian:businessArea "Risk Management" ;
+    bian:controlRecord bian:cr_3_1_5 ;
+    bian:supportsService core:svc_ledger .
+
+bian:cr_3_1_5 a bian:ControlRecord ;
+    bian:status "retired" .
+
+bian:sd_3_1_6 a bian:ServiceDomain ;
+    bian:name "Service Domain 3.1.6" ;
+    bian:businessArea "Retail Banking" ;
+    bian:controlRecord bian:cr_3_1_6 ;
+    bian:supportsService core:svc_notify .
+
+bian:cr_3_1_6 a bian:ControlRecord ;
+    bian:status "active" .
+
+bian:sd_3_1_7 a bian:ServiceDomain ;
+    bian:name "Service Domain 3.1.7" ;
+    bian:businessArea "Corporate Banking" ;
+    bian:controlRecord bian:cr_3_1_7 ;
+    bian:supportsService core:svc_audit .
+
+bian:cr_3_1_7 a bian:ControlRecord ;
+    bian:status "review" .

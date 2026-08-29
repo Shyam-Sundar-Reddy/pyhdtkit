@@ -1,0 +1,68 @@
+@prefix core: <http://example.org/core/> .
+@prefix sd: <http://example.org/sd/> .
+
+
+core:svc_orders a sd:Service ;
+    sd:label "Orders Service" ;
+    sd:owner core:team_platform ;
+    sd:tier "1" ;
+    sd:dependsOn core:svc_billing .
+
+core:svc_billing a sd:Service ;
+    sd:label "Billing Service" ;
+    sd:owner core:team_risk ;
+    sd:tier "2" ;
+    sd:dependsOn core:svc_payments .
+
+core:svc_payments a sd:Service ;
+    sd:label "Payments Service" ;
+    sd:owner core:team_data ;
+    sd:tier "3" ;
+    sd:dependsOn core:svc_ledger .
+
+core:svc_ledger a sd:Service ;
+    sd:label "Ledger Service" ;
+    sd:owner core:team_platform ;
+    sd:tier "1" ;
+    sd:dependsOn core:svc_notify .
+
+core:svc_notify a sd:Service ;
+    sd:label "Notify Service" ;
+    sd:owner core:team_risk ;
+    sd:tier "2" ;
+    sd:dependsOn core:svc_audit .
+
+core:svc_audit a sd:Service ;
+    sd:label "Audit Service" ;
+    sd:owner core:team_data ;
+    sd:tier "3" ;
+    sd:dependsOn core:svc_orders .
+
+core:team_platform a sd:Team ;
+    sd:label "Platform Team" .
+
+core:team_risk a sd:Team ;
+    sd:label "Risk Team" .
+
+core:team_data a sd:Team ;
+    sd:label "Data Team" .
+
+sd:dep_1_1_0 a sd:Deployment ;
+    sd:of core:svc_billing ;
+    sd:version "1.1.0" ;
+    sd:env "prod" .
+
+sd:dep_1_1_1 a sd:Deployment ;
+    sd:of core:svc_payments ;
+    sd:version "1.1.1" ;
+    sd:env "staging" .
+
+sd:dep_1_1_2 a sd:Deployment ;
+    sd:of core:svc_ledger ;
+    sd:version "1.1.2" ;
+    sd:env "prod" .
+
+sd:dep_1_1_3 a sd:Deployment ;
+    sd:of core:svc_notify ;
+    sd:version "1.1.3" ;
+    sd:env "staging" .

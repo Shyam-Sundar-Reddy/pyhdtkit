@@ -1,0 +1,28 @@
+@prefix core: <http://example.org/core/> .
+@prefix sd: <http://example.org/sd/> .
+
+
+sd:dep_2_1_0 a sd:Deployment ;
+    sd:of core:svc_payments ;
+    sd:version "2.1.0" ;
+    sd:env "prod" .
+
+sd:dep_2_1_1 a sd:Deployment ;
+    sd:of core:svc_ledger ;
+    sd:version "2.1.1" ;
+    sd:env "staging" .
+
+sd:dep_2_1_2 a sd:Deployment ;
+    sd:of core:svc_notify ;
+    sd:version "2.1.2" ;
+    sd:env "prod" .
+
+sd:dep_2_1_3 a sd:Deployment ;
+    sd:of core:svc_audit ;
+    sd:version "2.1.3" ;
+    sd:env "staging" .
+
+sd:dep_2_1_4 a sd:Deployment ;
+    sd:of core:svc_orders ;
+    sd:version "2.1.4" ;
+    sd:env "prod" .

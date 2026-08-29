@@ -1,0 +1,461 @@
+{
+  "version": 1,
+  "built_at": "2026-08-29T07:22:10+00:00",
+  "mapping": "tests\\fixtures\\db\\map.json",
+  "urns": {
+    "urn:hdt:bian": {
+      "urn": "urn:hdt:bian",
+      "files": [
+        {
+          "path": "hdt/bian/bian1/bian1_sample1.hdt",
+          "size": 867,
+          "mtime": 1787988129.678098,
+          "triple_count": 43,
+          "subject_count": 12,
+          "object_count": 27,
+          "predicates": {
+            "http://example.org/bian/status": 6,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 12,
+            "http://example.org/bian/businessArea": 6,
+            "http://example.org/bian/controlRecord": 6,
+            "http://example.org/bian/name": 6,
+            "http://example.org/bian/supportsService": 6,
+            "http://example.org/bian/deprecatedBy": 1
+          }
+        },
+        {
+          "path": "hdt/bian/bian1/bian1_sample2.hdt",
+          "size": 863,
+          "mtime": 1787988129.6761005,
+          "triple_count": 49,
+          "subject_count": 14,
+          "object_count": 28,
+          "predicates": {
+            "http://example.org/bian/status": 7,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 14,
+            "http://example.org/bian/businessArea": 7,
+            "http://example.org/bian/controlRecord": 7,
+            "http://example.org/bian/name": 7,
+            "http://example.org/bian/supportsService": 7
+          }
+        },
+        {
+          "path": "hdt/bian/bian1/bian1_sample3.hdt",
+          "size": 870,
+          "mtime": 1787988129.6790962,
+          "triple_count": 56,
+          "subject_count": 16,
+          "object_count": 30,
+          "predicates": {
+            "http://example.org/bian/status": 8,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 16,
+            "http://example.org/bian/businessArea": 8,
+            "http://example.org/bian/controlRecord": 8,
+            "http://example.org/bian/name": 8,
+            "http://example.org/bian/supportsService": 8
+          }
+        },
+        {
+          "path": "hdt/bian/bian2/bian2_sample1.hdt",
+          "size": 863,
+          "mtime": 1787988129.6812596,
+          "triple_count": 49,
+          "subject_count": 14,
+          "object_count": 28,
+          "predicates": {
+            "http://example.org/bian/status": 7,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 14,
+            "http://example.org/bian/businessArea": 7,
+            "http://example.org/bian/controlRecord": 7,
+            "http://example.org/bian/name": 7,
+            "http://example.org/bian/supportsService": 7
+          }
+        },
+        {
+          "path": "hdt/bian/bian2/bian2_sample2.hdt",
+          "size": 870,
+          "mtime": 1787988129.683482,
+          "triple_count": 56,
+          "subject_count": 16,
+          "object_count": 30,
+          "predicates": {
+            "http://example.org/bian/status": 8,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 16,
+            "http://example.org/bian/businessArea": 8,
+            "http://example.org/bian/controlRecord": 8,
+            "http://example.org/bian/name": 8,
+            "http://example.org/bian/supportsService": 8
+          }
+        },
+        {
+          "path": "hdt/bian/bian2/bian2_sample3.hdt",
+          "size": 903,
+          "mtime": 1787988129.685355,
+          "triple_count": 63,
+          "subject_count": 18,
+          "object_count": 32,
+          "predicates": {
+            "http://example.org/bian/status": 9,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 18,
+            "http://example.org/bian/businessArea": 9,
+            "http://example.org/bian/controlRecord": 9,
+            "http://example.org/bian/name": 9,
+            "http://example.org/bian/supportsService": 9
+          }
+        },
+        {
+          "path": "hdt/bian/bian3/bian3_sample1.hdt",
+          "size": 870,
+          "mtime": 1787988129.6872098,
+          "triple_count": 56,
+          "subject_count": 16,
+          "object_count": 30,
+          "predicates": {
+            "http://example.org/bian/status": 8,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 16,
+            "http://example.org/bian/businessArea": 8,
+            "http://example.org/bian/controlRecord": 8,
+            "http://example.org/bian/name": 8,
+            "http://example.org/bian/supportsService": 8
+          }
+        },
+        {
+          "path": "hdt/bian/bian3/bian3_sample2.hdt",
+          "size": 903,
+          "mtime": 1787988129.6891708,
+          "triple_count": 63,
+          "subject_count": 18,
+          "object_count": 32,
+          "predicates": {
+            "http://example.org/bian/status": 9,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 18,
+            "http://example.org/bian/businessArea": 9,
+            "http://example.org/bian/controlRecord": 9,
+            "http://example.org/bian/name": 9,
+            "http://example.org/bian/supportsService": 9
+          }
+        },
+        {
+          "path": "hdt/bian/bian3/bian3_sample3.hdt",
+          "size": 898,
+          "mtime": 1787988129.6911569,
+          "triple_count": 70,
+          "subject_count": 20,
+          "object_count": 34,
+          "predicates": {
+            "http://example.org/bian/status": 10,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 20,
+            "http://example.org/bian/businessArea": 10,
+            "http://example.org/bian/controlRecord": 10,
+            "http://example.org/bian/name": 10,
+            "http://example.org/bian/supportsService": 10
+          }
+        }
+      ]
+    },
+    "urn:hdt:kafka": {
+      "urn": "urn:hdt:kafka",
+      "files": [
+        {
+          "path": "hdt/kafka/kafka1/kafka1_sample1.hdt",
+          "size": 850,
+          "mtime": 1787988129.6941643,
+          "triple_count": 37,
+          "subject_count": 6,
+          "object_count": 20,
+          "predicates": {
+            "http://example.org/kafka/rack": 1,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 6,
+            "http://example.org/kafka/consumedBy": 5,
+            "http://example.org/kafka/hostedOn": 5,
+            "http://example.org/kafka/name": 5,
+            "http://example.org/kafka/partitions": 5,
+            "http://example.org/kafka/producedBy": 5,
+            "http://example.org/kafka/replicationFactor": 5
+          }
+        },
+        {
+          "path": "hdt/kafka/kafka1/kafka1_sample2.hdt",
+          "size": 883,
+          "mtime": 1787988129.6971638,
+          "triple_count": 44,
+          "subject_count": 7,
+          "object_count": 21,
+          "predicates": {
+            "http://example.org/kafka/rack": 1,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 7,
+            "http://example.org/kafka/consumedBy": 6,
+            "http://example.org/kafka/hostedOn": 6,
+            "http://example.org/kafka/name": 6,
+            "http://example.org/kafka/partitions": 6,
+            "http://example.org/kafka/producedBy": 6,
+            "http://example.org/kafka/replicationFactor": 6
+          }
+        },
+        {
+          "path": "hdt/kafka/kafka1/kafka1_sample3.hdt",
+          "size": 900,
+          "mtime": 1787988129.6951652,
+          "triple_count": 51,
+          "subject_count": 8,
+          "object_count": 22,
+          "predicates": {
+            "http://example.org/kafka/rack": 1,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 8,
+            "http://example.org/kafka/consumedBy": 7,
+            "http://example.org/kafka/hostedOn": 7,
+            "http://example.org/kafka/name": 7,
+            "http://example.org/kafka/partitions": 7,
+            "http://example.org/kafka/producedBy": 7,
+            "http://example.org/kafka/replicationFactor": 7
+          }
+        },
+        {
+          "path": "hdt/kafka/kafka2/kafka2_sample1.hdt",
+          "size": 883,
+          "mtime": 1787988129.699174,
+          "triple_count": 44,
+          "subject_count": 7,
+          "object_count": 21,
+          "predicates": {
+            "http://example.org/kafka/rack": 1,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 7,
+            "http://example.org/kafka/consumedBy": 6,
+            "http://example.org/kafka/hostedOn": 6,
+            "http://example.org/kafka/name": 6,
+            "http://example.org/kafka/partitions": 6,
+            "http://example.org/kafka/producedBy": 6,
+            "http://example.org/kafka/replicationFactor": 6
+          }
+        },
+        {
+          "path": "hdt/kafka/kafka2/kafka2_sample2.hdt",
+          "size": 900,
+          "mtime": 1787988129.7011654,
+          "triple_count": 51,
+          "subject_count": 8,
+          "object_count": 22,
+          "predicates": {
+            "http://example.org/kafka/rack": 1,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 8,
+            "http://example.org/kafka/consumedBy": 7,
+            "http://example.org/kafka/hostedOn": 7,
+            "http://example.org/kafka/name": 7,
+            "http://example.org/kafka/partitions": 7,
+            "http://example.org/kafka/producedBy": 7,
+            "http://example.org/kafka/replicationFactor": 7
+          }
+        },
+        {
+          "path": "hdt/kafka/kafka2/kafka2_sample3.hdt",
+          "size": 937,
+          "mtime": 1787988129.702472,
+          "triple_count": 59,
+          "subject_count": 9,
+          "object_count": 24,
+          "predicates": {
+            "http://example.org/kafka/rack": 1,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 9,
+            "http://example.org/kafka/compaction": 1,
+            "http://example.org/kafka/consumedBy": 8,
+            "http://example.org/kafka/hostedOn": 8,
+            "http://example.org/kafka/name": 8,
+            "http://example.org/kafka/partitions": 8,
+            "http://example.org/kafka/producedBy": 8,
+            "http://example.org/kafka/replicationFactor": 8
+          }
+        },
+        {
+          "path": "hdt/kafka/kafka3/kafka3_sample1.hdt",
+          "size": 900,
+          "mtime": 1787988129.7065322,
+          "triple_count": 51,
+          "subject_count": 8,
+          "object_count": 22,
+          "predicates": {
+            "http://example.org/kafka/rack": 1,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 8,
+            "http://example.org/kafka/consumedBy": 7,
+            "http://example.org/kafka/hostedOn": 7,
+            "http://example.org/kafka/name": 7,
+            "http://example.org/kafka/partitions": 7,
+            "http://example.org/kafka/producedBy": 7,
+            "http://example.org/kafka/replicationFactor": 7
+          }
+        },
+        {
+          "path": "hdt/kafka/kafka3/kafka3_sample2.hdt",
+          "size": 917,
+          "mtime": 1787988129.7045228,
+          "triple_count": 58,
+          "subject_count": 9,
+          "object_count": 23,
+          "predicates": {
+            "http://example.org/kafka/rack": 1,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 9,
+            "http://example.org/kafka/consumedBy": 8,
+            "http://example.org/kafka/hostedOn": 8,
+            "http://example.org/kafka/name": 8,
+            "http://example.org/kafka/partitions": 8,
+            "http://example.org/kafka/producedBy": 8,
+            "http://example.org/kafka/replicationFactor": 8
+          }
+        },
+        {
+          "path": "hdt/kafka/kafka3/kafka3_sample3.hdt",
+          "size": 934,
+          "mtime": 1787988129.7055247,
+          "triple_count": 65,
+          "subject_count": 10,
+          "object_count": 24,
+          "predicates": {
+            "http://example.org/kafka/rack": 1,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 10,
+            "http://example.org/kafka/consumedBy": 9,
+            "http://example.org/kafka/hostedOn": 9,
+            "http://example.org/kafka/name": 9,
+            "http://example.org/kafka/partitions": 9,
+            "http://example.org/kafka/producedBy": 9,
+            "http://example.org/kafka/replicationFactor": 9
+          }
+        }
+      ]
+    },
+    "urn:hdt:sd": {
+      "urn": "urn:hdt:sd",
+      "files": [
+        {
+          "path": "hdt/sd/sd1/sd1_sample1.hdt",
+          "size": 874,
+          "mtime": 1787988129.708352,
+          "triple_count": 52,
+          "subject_count": 13,
+          "object_count": 30,
+          "predicates": {
+            "http://example.org/sd/dependsOn": 6,
+            "http://example.org/sd/label": 9,
+            "http://example.org/sd/owner": 6,
+            "http://example.org/sd/tier": 6,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 13,
+            "http://example.org/sd/env": 4,
+            "http://example.org/sd/of": 4,
+            "http://example.org/sd/version": 4
+          }
+        },
+        {
+          "path": "hdt/sd/sd1/sd1_sample2.hdt",
+          "size": 576,
+          "mtime": 1787988129.7105494,
+          "triple_count": 20,
+          "subject_count": 5,
+          "object_count": 13,
+          "predicates": {
+            "http://example.org/sd/env": 5,
+            "http://example.org/sd/of": 5,
+            "http://example.org/sd/version": 5,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 5
+          }
+        },
+        {
+          "path": "hdt/sd/sd1/sd1_sample3.hdt",
+          "size": 596,
+          "mtime": 1787988129.709493,
+          "triple_count": 24,
+          "subject_count": 6,
+          "object_count": 15,
+          "predicates": {
+            "http://example.org/sd/env": 6,
+            "http://example.org/sd/of": 6,
+            "http://example.org/sd/version": 6,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 6
+          }
+        },
+        {
+          "path": "hdt/sd/sd2/sd2_sample1.hdt",
+          "size": 576,
+          "mtime": 1787988129.7159414,
+          "triple_count": 20,
+          "subject_count": 5,
+          "object_count": 13,
+          "predicates": {
+            "http://example.org/sd/env": 5,
+            "http://example.org/sd/of": 5,
+            "http://example.org/sd/version": 5,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 5
+          }
+        },
+        {
+          "path": "hdt/sd/sd2/sd2_sample2.hdt",
+          "size": 596,
+          "mtime": 1787988129.7191007,
+          "triple_count": 24,
+          "subject_count": 6,
+          "object_count": 15,
+          "predicates": {
+            "http://example.org/sd/env": 6,
+            "http://example.org/sd/of": 6,
+            "http://example.org/sd/version": 6,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 6
+          }
+        },
+        {
+          "path": "hdt/sd/sd2/sd2_sample3.hdt",
+          "size": 613,
+          "mtime": 1787988129.7170994,
+          "triple_count": 28,
+          "subject_count": 7,
+          "object_count": 16,
+          "predicates": {
+            "http://example.org/sd/env": 7,
+            "http://example.org/sd/of": 7,
+            "http://example.org/sd/version": 7,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 7
+          }
+        },
+        {
+          "path": "hdt/sd/sd3/sd3_sample1.hdt",
+          "size": 596,
+          "mtime": 1787988129.7132566,
+          "triple_count": 24,
+          "subject_count": 6,
+          "object_count": 15,
+          "predicates": {
+            "http://example.org/sd/env": 6,
+            "http://example.org/sd/of": 6,
+            "http://example.org/sd/version": 6,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 6
+          }
+        },
+        {
+          "path": "hdt/sd/sd3/sd3_sample2.hdt",
+          "size": 659,
+          "mtime": 1787988129.7122483,
+          "triple_count": 29,
+          "subject_count": 7,
+          "object_count": 17,
+          "predicates": {
+            "http://example.org/sd/env": 7,
+            "http://example.org/sd/of": 7,
+            "http://example.org/sd/rollbackOf": 1,
+            "http://example.org/sd/version": 7,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 7
+          }
+        },
+        {
+          "path": "hdt/sd/sd3/sd3_sample3.hdt",
+          "size": 642,
+          "mtime": 1787988129.7142549,
+          "triple_count": 32,
+          "subject_count": 8,
+          "object_count": 17,
+          "predicates": {
+            "http://example.org/sd/env": 8,
+            "http://example.org/sd/of": 8,
+            "http://example.org/sd/version": 8,
+            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": 8
+          }
+        }
+      ]
+    }
+  }
+}

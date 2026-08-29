@@ -1,0 +1,35 @@
+{
+  "urn:hdt:bian": [
+    "hdt/bian/bian1/bian1_sample1.hdt",
+    "hdt/bian/bian1/bian1_sample2.hdt",
+    "hdt/bian/bian1/bian1_sample3.hdt",
+    "hdt/bian/bian2/bian2_sample1.hdt",
+    "hdt/bian/bian2/bian2_sample2.hdt",
+    "hdt/bian/bian2/bian2_sample3.hdt",
+    "hdt/bian/bian3/bian3_sample1.hdt",
+    "hdt/bian/bian3/bian3_sample2.hdt",
+    "hdt/bian/bian3/bian3_sample3.hdt"
+  ],
+  "urn:hdt:kafka": [
+    "hdt/kafka/kafka1/kafka1_sample1.hdt",
+    "hdt/kafka/kafka1/kafka1_sample2.hdt",
+    "hdt/kafka/kafka1/kafka1_sample3.hdt",
+    "hdt/kafka/kafka2/kafka2_sample1.hdt",
+    "hdt/kafka/kafka2/kafka2_sample2.hdt",
+    "hdt/kafka/kafka2/kafka2_sample3.hdt",
+    "hdt/kafka/kafka3/kafka3_sample1.hdt",
+    "hdt/kafka/kafka3/kafka3_sample2.hdt",
+    "hdt/kafka/kafka3/kafka3_sample3.hdt"
+  ],
+  "urn:hdt:sd": [
+    "hdt/sd/sd1/sd1_sample1.hdt",
+    "hdt/sd/sd1/sd1_sample2.hdt",
+    "hdt/sd/sd1/sd1_sample3.hdt",
+    "hdt/sd/sd2/sd2_sample1.hdt",
+    "hdt/sd/sd2/sd2_sample2.hdt",
+    "hdt/sd/sd2/sd2_sample3.hdt",
+    "hdt/sd/sd3/sd3_sample1.hdt",
+    "hdt/sd/sd3/sd3_sample2.hdt",
+    "hdt/sd/sd3/sd3_sample3.hdt"
+  ]
+}
