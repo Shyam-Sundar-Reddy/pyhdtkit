@@ -7,11 +7,18 @@
 [![PyPI version](https://img.shields.io/pypi/v/pyhdtkit.svg)](https://pypi.org/project/pyhdtkit/)
 [![PyPI license](https://img.shields.io/pypi/l/pyhdtkit.svg)](https://pypi.org/project/pyhdtkit/)
 
-A pure-Python package to convert between RDF Turtle (`.ttl`) and HDT (`.hdt`):
+A pure-Python package for RDF HDT files. It does two things:
+
+**Convert** between Turtle (`.ttl`) and HDT (`.hdt`)
 
 - `.ttl` → `.hdt`
 - `.hdt` → `.ttl`
 - combine two or more `.hdt` files into one
+
+**Query** HDT files with SPARQL 1.1 — without reading them
+
+- point it at a folder of `.hdt` files plus a `map.json` naming your graphs
+- ask a question, get an answer back without decoding files it doesn't need
 
 No CLI — `import pyhdtkit` is the interface. No Rust, no native extension.
 
@@ -28,7 +35,7 @@ Dev:
 pip install -e ".[dev]"
 ```
 
-## Usage
+## Usage — converting
 
 ```python
 from pyhdtkit import ttl2hdt, hdt2ttl, hdtcat
@@ -38,23 +45,106 @@ hdt2ttl("graph.hdt", "graph.ttl")
 hdtcat(["a.hdt", "b.hdt"], "combined.hdt")
 ```
 
+## Usage — querying
+
+Put your `.hdt` files in a folder with a `map.json` saying which files make up
+each named graph. Paths are relative to that folder, and nested subfolders carry
+no meaning — every file listed under a URN belongs to that one graph.
+
+```
+mydb/
+  map.json
+  map.catalog.json        # built once, see below
+  hdt/sd/sd1/sd1_sample1.hdt
+  hdt/sd/sd1/sd1_sample2.hdt
+```
+
+```json
+{
+  "urn:hdt:sd":    ["hdt/sd/sd1/sd1_sample1.hdt", "hdt/sd/sd1/sd1_sample2.hdt"],
+  "urn:hdt:kafka": ["hdt/kafka/kafka1/kafka1_sample1.hdt"]
+}
+```
+
+```python
+from pyhdtkit import dataset, build_catalog
+
+build_catalog("mydb/")          # once per corpus, writes mydb/map.catalog.json
+ds = dataset("mydb/")
+
+for s, p, o in ds.query("""
+        SELECT ?s ?p ?o
+        WHERE { GRAPH <urn:hdt:sd> { ?s ?p ?o } }
+        LIMIT 10"""):
+    print(s, p, o)
+```
+
+The mapping is the only source of truth: folders are never scanned, so a file
+not listed does not exist as far as queries are concerned. A mapping naming a
+missing file fails loudly at load rather than silently returning fewer results.
+
+### Why it's fast
+
+It never reads the files. A query is answered by seeking into them:
+
+- the **catalog** records which predicates live in which file, so a query for a
+  rare predicate opens only the files that can contain it — and one for an
+  absent predicate opens none at all
+- each file's dictionary is sorted, so a term is found by binary search instead
+  of scanning
+- the triples are indexed by a rank/select bitmap, so a subject is reached by
+  arithmetic rather than by counting through the file
+
+Measured on the test corpus (9 files in one graph):
+
+| Query | Files opened |
+|---|---|
+| Rare predicate | **1** of 9 |
+| Predicate in no file | **0** of 9 |
+| `LIMIT 3` over the graph | **1** of 9 |
+| `len(store)` (count everything) | **0** of 9 |
+
+Results stream, so `LIMIT` costs what it asks for rather than what the corpus
+holds.
+
+The catalog is an optimisation, not a requirement — queries return the same
+answers without it, they just open more files. Build it when the data changes;
+it is validated against each file's size and mtime and rebuilt when stale.
+
+**Known limits.** Only `SELECT`/`ASK`/`CONSTRUCT`/`DESCRIBE` reads — the store
+is read-only, and `SERVICE` federation is not supported. HDT indexes subjects
+only, so patterns with a bound predicate or object (`?s :p ?o`, `?s ?p :o`) scan
+the candidate files rather than seeking within them.
+
 ## Errors
 
-All three functions raise `ValueError` for anything that goes wrong — a
-missing or unreadable input file, malformed Turtle, a truncated or corrupt
+The three conversion functions raise `ValueError` for anything that goes wrong —
+a missing or unreadable input file, malformed Turtle, a truncated or corrupt
 `.hdt` file, or an unwritable output path. `hdtcat` additionally requires
 at least 2 input paths.
 
+On the query side a bad mapping raises `MappingError` at load, naming the URN
+and path — a mapping that quietly skipped a graph would return wrong answers,
+which is worse than failing.
+
 ## Status
 
-All three functions are implemented: a real HDT binary reader and writer
-(dictionary front-coding, BitmapTriples), built from scratch — no Rust, no
-C extension, no wrapping an existing HDT library. `rdflib` handles Turtle
-parsing/serialization; everything HDT-specific is pure Python.
+Conversion and querying are both implemented: a real HDT binary reader and
+writer (dictionary front-coding, BitmapTriples), built from scratch — no Rust,
+no C extension, no wrapping an existing HDT library. `rdflib` handles the Turtle
+grammar and the SPARQL language; everything HDT-specific is pure Python.
 
 The read path (`hdt2ttl`) is verified against a real `.hdt` file produced
 by independent hdt-cpp tooling (`tests/fixtures/snikmeta.hdt`), not just
 against our own writer.
+
+The two halves are kept deliberately separate — `pyhdtkit.hdt` (convert) and
+`pyhdtkit.sparql` (query) import nothing from each other, and a test enforces
+that. They need different things from the same format: conversion reads whole
+files, querying must never read a whole file. Keeping them apart costs a little
+duplicated low-level code and means a change to one can't break the other; it
+also lets the test suite cross-check two genuinely independent decoders against
+each other.
 
 ## Performance
 
